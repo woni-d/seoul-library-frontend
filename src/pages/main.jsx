@@ -1,15 +1,36 @@
 import React, { Component } from 'react';
 import CustomSelect from '../components/CustomSelect';
+import CustomCard from '../components/CustomCard';
 import { Container } from './Main.style';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.setState({
+    this.state = {
       district: '강남구',
+      libraryList: [],
       libraryStartPosition: null,
       libraryEndPosition: null,
-    });
+    };
+  }
+
+  componentDidMount() {
+    this.getLibraryInfo();
+  }
+
+  getLibraryInfo() {
+    this.setState({
+      libraryList: [
+        {
+          LBRRY_SEQ_NO: 1571,
+          LBRRY_NAME: 'LH강남3단지작은도서관',
+          CODE_VALUE: '강남구',
+          ADRES: '서울특별시 강남구 자곡로3길 22',
+          FDRM_CLOSE_DATE: '매주 화요일,목요일',
+          TEL_NO: '02-459-8700',
+        },
+      ]
+    })
   }
 
   handleChange = e => {
@@ -130,10 +151,11 @@ class Main extends Component {
       [e.target.name]: e.target.value,
       ...stateObj,
     });
-    // TODO: await getLibraryInfo();
   }
   
 	render() {
+    console.log(this.state);
+    const { libraryList } = this.state;
     const districtList = [
       '강남구',
       '강동구',
@@ -170,6 +192,15 @@ class Main extends Component {
           value={districtList}
           handleChange={this.handleChange}
         />
+        {
+          libraryList.length !== 0 &&
+          libraryList.map((elem, idx) => (
+            <CustomCard
+              key={idx}
+              value={elem}
+            />
+          ))
+        }
       </Container>
 		)
 	}
