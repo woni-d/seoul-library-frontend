@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Route } from 'react-router-dom';
-import Main from './main';
+import Main from './Main.jsx';
 
 class Index extends Component {
   render() {
