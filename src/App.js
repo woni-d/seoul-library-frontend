@@ -1,24 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Helmet } from 'react-helmet';
+import dotenv from 'dotenv';
+import Page from './pages';
 import './App.css';
+
+dotenv.config();
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+        <title>Seoul Library</title>
+        <link rel="canonical" href="http://127.0.0.1:3000" />
+      </Helmet>
+      <Page />
     </div>
   );
 }
