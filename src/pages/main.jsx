@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar, TextField, Button, IconButton } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
+import SaveIcon from '@material-ui/icons/Save';
+import SearchIcon from '@material-ui/icons/Search';
 import Header from '../components/Header';
 import CustomSelect from '../components/CustomSelect';
 import CustomCard from '../components/CustomCard';
@@ -227,6 +229,55 @@ class Main extends Component {
           value={districtList}
           handleChange={this.handleChange}
         />
+
+        <div>
+
+          <TextField
+            id="standard-number"
+            label="start"
+            placeholder="시작 (start)"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+  
+          <TextField
+            id="standard-number"
+            label="limit"
+            placeholder="개수 (limit)"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<SaveIcon />}
+          >
+            적용
+          </Button>
+        </div>
+
+        <div>
+          <TextField
+            id="standard-full-width"
+            label="Label"
+            style={{ margin: 8 }}
+            placeholder="Placeholder"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <IconButton aria-label="search" color="primary">
+            <SearchIcon />
+          </IconButton>
+        </div>
 
         <Snackbar open={successAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
           <Alert onClose={this.handleClose} severity="success" name="success">
