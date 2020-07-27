@@ -1,3 +1,20 @@
-.root {
+.library-wrapper {
     min-width: 90%;
+    transition: transform 30s;
+    border-top: 6px solid #32b67a;
+    -webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.library-wrapper:hover {
+	-webkit-box-shadow: 10px 10px 15px 0px rgba(205,205,205,1);
+    -moz-box-shadow: 10px 10px 15px 0px rgba(205,205,205,1);
+    box-shadow: 10px 10px 15px 0px rgba(205,205,205,1);
+    transform: translate(-20px, -20px);
+}
+
+.map-wrapper {
+    border: 2px solid #32b67a;
 }

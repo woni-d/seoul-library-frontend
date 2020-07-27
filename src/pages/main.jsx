@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import Header from '../components/Header';
 import CustomSelect from '../components/CustomSelect';
 import CustomCard from '../components/CustomCard';
-import { Container } from './Main.style';
+import { Container, Libraries } from './Main.style';
 
 class Main extends Component {
   constructor(props) {
@@ -186,21 +187,28 @@ class Main extends Component {
 
 		return (
       <Container>
+        <Header />
+        
         <CustomSelect
           label='구'
           name='district'
           value={districtList}
           handleChange={this.handleChange}
         />
-        {
-          libraryList.length !== 0 &&
-          libraryList.map((elem, idx) => (
-            <CustomCard
-              key={idx}
-              value={elem}
-            />
-          ))
-        }
+        
+        <Libraries>
+          {
+            libraryList.length !== 0 &&
+            libraryList.map((elem, idx) => (
+              <CustomCard
+                key={idx}
+                cardItem={elem}
+                loading={true}
+              />
+            ))
+          }
+        </Libraries>
+
       </Container>
 		)
 	}

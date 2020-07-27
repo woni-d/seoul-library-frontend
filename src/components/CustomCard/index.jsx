@@ -18,33 +18,36 @@ class CardView extends Component {
     const { cardItem, loading } = this.props;
     return ( 
       <>
-        <Card className='root'>
+        <Card className='library-wrapper'>
           <CardContent>
             <Typography variant="h6">
-                {loading ? <Skeleton variant="text" /> : `No. ${cardItem.LBRRY_SEQ_NO} ${cardItem.LBRRY_NAME}`}
+              {loading ? <Skeleton variant="text" /> : `No. ${cardItem.LBRRY_SEQ_NO} ${cardItem.LBRRY_NAME}`}
             </Typography>
 
             <br />
 
             <Typography variant="body1">
-                {loading ? <Skeleton variant="text" /> : `구명: ${cardItem.CODE_VALUE}`}
+              {loading ? <Skeleton variant="text" /> : `구명: ${cardItem.CODE_VALUE}`}
             </Typography>
 
             <Typography variant="body1">
-                {loading ? <Skeleton variant="text" /> : `주소: ${cardItem.ADRES}`}
+              {loading ? <Skeleton variant="text" /> : `주소: ${cardItem.ADRES}`}
             </Typography>
 
             <Typography variant="body1">
-                {loading ? <Skeleton variant="text" /> : `정기 휴관일: ${cardItem.FDRM_CLOSE_DATE}`}
+              {loading ? <Skeleton variant="text" /> : `정기 휴관일: ${cardItem.FDRM_CLOSE_DATE}`}
             </Typography>
 
             <Typography variant="body1">
-                {loading ? <Skeleton variant="text" /> : `전화번호: ${cardItem.TEL_NO}`}
+              {loading ? <Skeleton variant="text" /> : `전화번호: ${cardItem.TEL_NO}`}
             </Typography>
 
-            <Skeleton variant="rect" animation="wave" height={250} />
+            <div className="map-wrapper">
+              <Skeleton variant="rect" animation="wave" height={250} />
+            </div>
 
           </CardContent>
+
           <CardActions>
             <Button>Map</Button>
           </CardActions>
