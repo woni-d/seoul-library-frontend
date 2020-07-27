@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import Header from '../components/Header';
 import CustomSelect from '../components/CustomSelect';
 import CustomCard from '../components/CustomCard';
+import LinearProgress from '../components/LinearProgress';
+import CustomPagination from '../components/CustomPagination';
 import { Container, Libraries } from './Main.style';
 
 class Main extends Component {
@@ -9,9 +13,14 @@ class Main extends Component {
     super(props);
     this.state = {
       district: '강남구',
-      libraryList: [],
+      libraryList: null,
+      libraryListCount: null,
       libraryStartPosition: null,
       libraryEndPosition: null,
+      libraryCountPerPage: 16, // default
+      currentPage: null,
+      successAlertOpen: false,
+      errorAlertOpen: false,
     };
   }
 
@@ -30,8 +39,22 @@ class Main extends Component {
           FDRM_CLOSE_DATE: '매주 화요일,목요일',
           TEL_NO: '02-459-8700',
         },
-      ]
+      ],
+      libraryListCount: 1,
+      currentPage: 1,
     })
+  }
+
+  handleClose = (e) => {
+    this.setState({
+      [`${e.target.name}AlertOpen`]: false,
+    })
+  }
+
+  handlePagination = (e, value) => {
+    this.setState({
+      currentPage: value,
+    });
   }
 
   handleChange = e => {
@@ -155,8 +178,7 @@ class Main extends Component {
   }
   
 	render() {
-    console.log(this.state);
-    const { libraryList } = this.state;
+    const { successAlertOpen, errorAlertOpen, libraryList, libraryListCount, libraryStartPosition, libraryEndPosition, libraryCountPerPage, currentPage } = this.state;
     const districtList = [
       '강남구',
       '강동구',
@@ -185,9 +207,19 @@ class Main extends Component {
       '중랑구',
     ];
 
-		return (
+    
+    const totalPage = Math.round(libraryListCount / libraryCountPerPage) + ((libraryListCount % libraryCountPerPage) && 1) 
+    function Alert(props) {
+      return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+
+    return (
       <Container>
         <Header />
+      
+        <div>
+          <LinearProgress />
+        </div>
         
         <CustomSelect
           label='구'
@@ -195,10 +227,22 @@ class Main extends Component {
           value={districtList}
           handleChange={this.handleChange}
         />
+
+        <Snackbar open={successAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
+          <Alert onClose={this.handleClose} severity="success" name="success">
+            This is a success message!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar open={errorAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
+          <Alert onClose={this.handleClose} severity="error" name="error">
+            This is a success message!
+          </Alert>
+        </Snackbar>
         
         <Libraries>
           {
-            libraryList.length !== 0 &&
+            libraryList && 
             libraryList.map((elem, idx) => (
               <CustomCard
                 key={idx}
@@ -207,6 +251,7 @@ class Main extends Component {
               />
             ))
           }
+          <CustomPagination totalPage={totalPage} currentPage={currentPage} handlePagination={this.handlePagination} />
         </Libraries>
 
       </Container>
