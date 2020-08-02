@@ -7,7 +7,7 @@ import './App.css';
 dotenv.config();
 
 function App() {
-  const apiKey = process.env.API_KEY;
+  const apiKey = process.env.REACT_APP_KAKAO_API_KEY;
   return (
     <div className="App">
       <Helmet>
