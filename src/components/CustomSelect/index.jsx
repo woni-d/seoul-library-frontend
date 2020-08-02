@@ -3,7 +3,7 @@ import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 
 class CustomSelect extends Component {
     render() {
-      const { label, name, value, list, handleSearchOptionChange } = this.props;
+      const { label, name, value, list, handleSearchValueChange } = this.props;
       return (
         <>
           <FormControl variant="outlined">
@@ -12,7 +12,7 @@ class CustomSelect extends Component {
               label={label}
               name={name}
               value={value}
-              onChange={handleSearchOptionChange}
+              onChange={handleSearchValueChange}
             >
               {
                 list && list.map((elem, idx) => (
