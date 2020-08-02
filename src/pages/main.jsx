@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Snackbar, TextField, Button, IconButton } from '@material-ui/core';
+import { Snackbar, TextField, FormControl, InputLabel, Select, MenuItem, Button, IconButton } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import SaveIcon from '@material-ui/icons/Save';
 import SearchIcon from '@material-ui/icons/Search';
 import Header from '../components/Header';
 import CustomSelect from '../components/CustomSelect';
@@ -14,11 +13,13 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      district: '강남구',
       libraryList: null,
       libraryListCount: null,
-      libraryStartPosition: null,
-      libraryEndPosition: null,
+      libraryStartCount: null,
+      libraryEndCount: null,
+      searchOption: 'selectedDistrict',
+      selectedDistrict: '강남구',
+      searchText: '',
       libraryCountPerPage: 16, // default
       currentPage: null,
       successAlertOpen: false,
@@ -43,7 +44,7 @@ class Main extends Component {
         },
       ],
       libraryListCount: 1,
-      currentPage: 1,
+      currentPage: 0,
     })
   }
 
@@ -51,6 +52,14 @@ class Main extends Component {
     this.setState({
       [`${e.target.name}AlertOpen`]: false,
     })
+  }
+
+  handleSearch = (e) => {
+    this.setState({
+      currentPage: 0,
+    });
+
+    this.getLibraryInfo();
   }
 
   handlePagination = (e, value) => {
@@ -61,14 +70,10 @@ class Main extends Component {
 
   handleChange = e => {
     const stateObj = {};
-    if (e.target.name === 'district') {
-      const selectedDistrict = e.target.value;
+    if (e.target.name === 'selectedDistrict') {
+      let selectedDistrict = e.target.value;
       let start, end;
       switch (selectedDistrict) {
-        case '강남구':
-          start = 1;
-          end = 53;
-          break;
         case '강동구':
           start = 54;
           end = 104;
@@ -166,12 +171,14 @@ class Main extends Component {
           end = 1366;
           break;
         default:
+          selectedDistrict = '강남구';
           start = 1;
           end = 53;
       }
-      stateObj['libraryStartPosition'] = start;
-      stateObj['libraryEndPosition'] = end;
-      stateObj['searchCondition'] = 'district';
+      stateObj['libraryStartCount'] = start;
+      stateObj['libraryEndCount'] = end;
+      stateObj['searchText'] = '';
+      stateObj['searchOption'] = e.target.name;
     }
     this.setState({
       [e.target.name]: e.target.value,
@@ -180,7 +187,20 @@ class Main extends Component {
   }
   
 	render() {
-    const { successAlertOpen, errorAlertOpen, libraryList, libraryListCount, libraryStartPosition, libraryEndPosition, libraryCountPerPage, currentPage } = this.state;
+    const {
+      successAlertOpen,
+      errorAlertOpen,
+      libraryList,
+      libraryListCount,
+      libraryStartCount,
+      libraryEndCount,
+      searchOption,
+      selectedDistrict,
+      searchText,
+      libraryCountPerPage,
+      currentPage
+    } = this.state;
+
     const districtList = [
       '강남구',
       '강동구',
@@ -209,11 +229,32 @@ class Main extends Component {
       '중랑구',
     ];
 
-    
+    const searchOptionObj = {
+      district: {
+        prop: 'selectedDistrict',
+        label: '구명',
+      },
+      name: {
+        prop: 'name',
+        label: '도서관명',
+      },
+      address: {
+        prop: 'address',
+        label: '도서관주소',
+      }
+    };
+    const searchTextOptionArr = [
+      'name',
+      'address',
+    ]
+
     const totalPage = Math.round(libraryListCount / libraryCountPerPage) + ((libraryListCount % libraryCountPerPage) && 1) 
+    
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    const searchTextOptionValue = searchOptionObj.hasOwnProperty(searchOption) ? searchOption : 'None'
 
     return (
       <Container>
@@ -224,16 +265,59 @@ class Main extends Component {
         </div>
         
         <CustomSelect
-          label='구'
-          name='district'
-          value={districtList}
-          handleChange={this.handleChange}
+          label={searchOptionObj.district.label}
+          name={searchOptionObj.district.prop}
+          value={this.state[searchOptionObj.district.prop]}
+          list={districtList}
+          handleSearchOptionChange={this.handleChange}
         />
+
+        <div>
+          <span value={selectedDistrict ? `${selectedDistrict}가 선택되었습니다` : ''}></span>{/* id: select_gu_span -> localStorage.gu_selected + "가 선택되었습니다";*/}
+        </div>
+
+        <div>
+          <FormControl variant="outlined">
+            <Select
+              label="검색 옵션"
+              name="searchOption"
+              value={searchTextOptionValue}
+              onChange={this.handleChange}
+            >
+              {
+                searchTextOptionArr.map(elem => (
+                  <MenuItem
+                    key={searchOptionObj[elem].prop}
+                    value={searchOptionObj[elem].prop}
+                  >
+                    {searchOptionObj[elem].label}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+
+          <TextField
+              label={searchOptionObj.hasOwnProperty(searchOption) ? searchOptionObj[searchOption].label : 'None'}
+              name="searchText"
+              value={searchText}
+              autoComplete="searchKeyword"
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            endIcon={<SearchIcon />}
+            onClick={this.handleSearch}
+          >
+            검색
+          </Button>
+        </div>
 
         <div>
 
           <TextField
-            id="standard-number"
             label="start"
             placeholder="시작 (start)"
             type="number"
@@ -243,7 +327,6 @@ class Main extends Component {
           />
   
           <TextField
-            id="standard-number"
             label="limit"
             placeholder="개수 (limit)"
             type="number"
@@ -256,9 +339,9 @@ class Main extends Component {
             variant="contained"
             color="primary"
             size="large"
-            startIcon={<SaveIcon />}
+            endIcon={<SearchIcon />}
           >
-            적용
+            검색
           </Button>
         </div>
 
@@ -266,7 +349,6 @@ class Main extends Component {
           <TextField
             id="standard-full-width"
             label="Label"
-            style={{ margin: 8 }}
             placeholder="Placeholder"
             fullWidth
             margin="normal"

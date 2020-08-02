@@ -44,32 +44,6 @@ const AntTab = withStyles((theme) => ({
   selected: {},
 }))((props) => <Tab disableRipple {...props} />);
 
-const StyledTabs = withStyles({
-  indicator: {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    '& > span': {
-      maxWidth: 40,
-      width: '100%',
-      backgroundColor: '#635ee7',
-    },
-  },
-})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
-
-const StyledTab = withStyles((theme) => ({
-  root: {
-    textTransform: 'none',
-    color: '#fff',
-    fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(15),
-    marginRight: theme.spacing(1),
-    '&:focus': {
-      opacity: 1,
-    },
-  },
-}))((props) => <Tab disableRipple {...props} />);
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -100,13 +74,6 @@ function Menu(props) {
           <AntTab label="구 별 검색" />
           <AntTab label="직접 검색" />
         </AntTabs>
-        <Typography className={classes.padding} />
-      </div>
-      <div className={classes.demo2}>
-        <StyledTabs value={value} onChange={handleChange}>
-          <StyledTab label="구 별 검색" />
-          <StyledTab label="직접 검색" />
-        </StyledTabs>
         <Typography className={classes.padding} />
       </div>
     </div>
