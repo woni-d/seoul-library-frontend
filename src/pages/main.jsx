@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Snackbar, TextField, FormControl, InputLabel, Select, MenuItem, Button, IconButton } from '@material-ui/core';
+import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import SearchIcon from '@material-ui/icons/Search';
 import Header from '../components/Header';
-import CustomSelect from '../components/CustomSelect';
 import CustomCard from '../components/CustomCard';
 import LinearProgress from '../components/LinearProgress';
 import CustomPagination from '../components/CustomPagination';
@@ -66,6 +64,12 @@ class Main extends Component {
     this.setState({
       currentPage: value,
     });
+  }
+
+  handleSearchOptionChange = (value) => e => {
+    this.setState({
+      searchOption: value === 0 ? 'selectedDistrict' : 'name',
+    })
   }
 
   handleChange = e => {
@@ -178,7 +182,6 @@ class Main extends Component {
       stateObj['libraryStartCount'] = start;
       stateObj['libraryEndCount'] = end;
       stateObj['searchText'] = '';
-      stateObj['searchOption'] = e.target.name;
     }
     this.setState({
       [e.target.name]: e.target.value,
@@ -249,116 +252,27 @@ class Main extends Component {
     ]
 
     const totalPage = Math.round(libraryListCount / libraryCountPerPage) + ((libraryListCount % libraryCountPerPage) && 1) 
-    
+  
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    const searchTextOptionValue = searchOptionObj.hasOwnProperty(searchOption) ? searchOption : 'None'
-
     return (
       <Container>
-        <Header />
+        <Header
+          districtList={districtList}
+          searchOption={searchOption}
+          searchOptionObj={searchOptionObj}
+          searchTextOptionArr={searchTextOptionArr}
+          selectedDistrict={selectedDistrict}
+          searchText={searchText}
+          handleSearchOptionChange={this.handleSearchOptionChange}
+          handleSearchValueChange={this.handleChange}
+          handleSearch={this.handleSearch}
+        />
       
         <div>
           <LinearProgress />
-        </div>
-        
-        <CustomSelect
-          label={searchOptionObj.district.label}
-          name={searchOptionObj.district.prop}
-          value={this.state[searchOptionObj.district.prop]}
-          list={districtList}
-          handleSearchOptionChange={this.handleChange}
-        />
-
-        <div>
-          <span value={selectedDistrict ? `${selectedDistrict}가 선택되었습니다` : ''}></span>{/* id: select_gu_span -> localStorage.gu_selected + "가 선택되었습니다";*/}
-        </div>
-
-        <div>
-          <FormControl variant="outlined">
-            <Select
-              label="검색 옵션"
-              name="searchOption"
-              value={searchTextOptionValue}
-              onChange={this.handleChange}
-            >
-              {
-                searchTextOptionArr.map(elem => (
-                  <MenuItem
-                    key={searchOptionObj[elem].prop}
-                    value={searchOptionObj[elem].prop}
-                  >
-                    {searchOptionObj[elem].label}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
-
-          <TextField
-              label={searchOptionObj.hasOwnProperty(searchOption) ? searchOptionObj[searchOption].label : 'None'}
-              name="searchText"
-              value={searchText}
-              autoComplete="searchKeyword"
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            endIcon={<SearchIcon />}
-            onClick={this.handleSearch}
-          >
-            검색
-          </Button>
-        </div>
-
-        <div>
-
-          <TextField
-            label="start"
-            placeholder="시작 (start)"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-  
-          <TextField
-            label="limit"
-            placeholder="개수 (limit)"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            endIcon={<SearchIcon />}
-          >
-            검색
-          </Button>
-        </div>
-
-        <div>
-          <TextField
-            id="standard-full-width"
-            label="Label"
-            placeholder="Placeholder"
-            fullWidth
-            margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <IconButton aria-label="search" color="primary">
-            <SearchIcon />
-          </IconButton>
         </div>
 
         <Snackbar open={successAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
