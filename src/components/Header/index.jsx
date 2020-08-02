@@ -38,6 +38,8 @@ function Header(props) {
     searchOptionObj,
     searchTextOptionArr,
     selectedDistrict,
+    libraryStartCount,
+    libraryEndCount,
     searchText,
     handleSearchOptionChange,
     handleSearchValueChange,
@@ -94,20 +96,26 @@ function Header(props) {
             <div>
               <TextField
                 label="start"
+                name="libraryStartCount"
+                value={libraryStartCount}
                 placeholder="시작 (start)"
                 type="number"
                 InputLabelProps={{
                   shrink: true,
                 }}
+                onChange={handleSearchValueChange}
               />
       
               <TextField
                 label="limit"
+                name="libraryEndCount"
+                value={libraryEndCount}
                 placeholder="개수 (limit)"
                 type="number"
                 InputLabelProps={{
                   shrink: true,
                 }}
+                onChange={handleSearchValueChange}
               />
 
               <Button

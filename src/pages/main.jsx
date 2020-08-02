@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import dotenv from 'dotenv';
+import axios from 'axios';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import Header from '../components/Header';
@@ -13,8 +15,9 @@ class Main extends Component {
     this.state = {
       libraryList: null,
       libraryListCount: null,
-      libraryStartCount: null,
-      libraryEndCount: null,
+      libraryTotalCount: null,
+      libraryStartCount: 0,
+      libraryEndCount: 10,
       searchOption: 'selectedDistrict',
       selectedDistrict: '강남구',
       searchText: '',
@@ -25,30 +28,37 @@ class Main extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getLibraryInfo();
+  async componentDidMount() {
+    await this.getLibraryInfo();
   }
 
-  getLibraryInfo() {
-    this.setState({
-      libraryList: [
-        {
-          LBRRY_SEQ_NO: 1571,
-          LBRRY_NAME: 'LH강남3단지작은도서관',
-          CODE_VALUE: '강남구',
-          ADRES: '서울특별시 강남구 자곡로3길 22',
-          FDRM_CLOSE_DATE: '매주 화요일,목요일',
-          TEL_NO: '02-459-8700',
-        },
-      ],
-      libraryListCount: 1,
-      currentPage: 0,
-    })
+  async getLibraryInfo() {
+    const { libraryStartCount, libraryEndCount } = this.state;
+    const libraryListCount = libraryEndCount - libraryStartCount;
+    const apiKey = process.env.REACT_APP_SEOUL_API_KEY;
+    const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount}/${libraryEndCount}`;
+    try {
+      const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
+      
+      this.setState({
+        libraryList: row,
+        libraryListCount,
+        libraryTotalCount: list_total_count,
+        currentPage: 0,
+        successAlertOpen: true,
+      })
+    } catch (err) {
+      this.setState({
+        errorAlertOpen: true,
+      })
+    }
+    
   }
 
   handleClose = (e) => {
     this.setState({
-      [`${e.target.name}AlertOpen`]: false,
+      successAlertOpen: false,
+      errorAlertOpen: false,
     })
   }
 
@@ -265,6 +275,8 @@ class Main extends Component {
           searchOptionObj={searchOptionObj}
           searchTextOptionArr={searchTextOptionArr}
           selectedDistrict={selectedDistrict}
+          libraryStartCount={libraryStartCount}
+          libraryEndCount={libraryEndCount}
           searchText={searchText}
           handleSearchOptionChange={this.handleSearchOptionChange}
           handleSearchValueChange={this.handleChange}
@@ -275,15 +287,15 @@ class Main extends Component {
           <LinearProgress />
         </div>
 
-        <Snackbar open={successAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
-          <Alert onClose={this.handleClose} severity="success" name="success">
-            This is a success message!
+        <Snackbar open={successAlertOpen} autoHideDuration={3000} onClose={this.handleClose}>
+          <Alert onClose={this.handleClose} severity="success">
+            도서관 정보를 정상적으로 불러왔습니다!
           </Alert>
         </Snackbar>
 
-        <Snackbar open={errorAlertOpen} autoHideDuration={6000} onClose={this.handleClose}>
-          <Alert onClose={this.handleClose} severity="error" name="error">
-            This is a success message!
+        <Snackbar open={errorAlertOpen} autoHideDuration={3000} onClose={this.handleClose}>
+          <Alert onClose={this.handleClose} severity="error">
+          도서관 정보를 불러오지 못했습니다.
           </Alert>
         </Snackbar>
         
