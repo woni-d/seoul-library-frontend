@@ -119,6 +119,7 @@ function Header(props) {
               />
 
               <Button
+                onClick={handleSearchValueChange}
                 variant="contained"
                 color="primary"
                 size="large"
@@ -161,11 +162,11 @@ function Header(props) {
               />
 
               <Button
+                onClick={handleSearch}
                 variant="contained"
                 color="primary"
                 size="large"
                 endIcon={<SearchIcon />}
-                onClick={handleSearch}
               >
                 검색
               </Button>

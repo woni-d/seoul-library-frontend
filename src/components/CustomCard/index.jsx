@@ -54,6 +54,7 @@ class CardView extends Component {
             </Typography>
 
             {
+              // TODO: Kakao Map API 처리
               // loading
               // ? <Skeleton variant="rect" animation="wave" width={500} height={250} /> 
               // : <MapView
