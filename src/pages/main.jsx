@@ -13,42 +13,49 @@ class Main extends Component {
     super(props);
     this.state = {
       libraryList: null,
-      libraryListCount: null,
-      libraryTotalCount: null,
-      libraryStartCount: 0,
-      libraryEndCount: 10,
+      libraryListLength: null,
+      libraryTotalCount: (53 - 1) + 1,
+      libraryStartCount: 1,
+      libraryEndCount: 53,
       searchOption: 'selectedDistrict',
       selectedDistrict: '강남구',
       searchText: '',
-      libraryCountPerPage: 10, // default
-      currentPage: 0,
+      libraryCountPerPage: 5, // default
+      currentPage: 1,
+
       successAlertOpen: false,
       errorAlertOpen: false,
     };
   }
 
   async componentDidMount() {
-    await this.getLibraryInfo();
+    try {
+      await this.getLibraryInfo();
+      this.setState({
+        successAlertOpen: true,
+      })
+    }
+    catch (err) {
+      this.setState({
+        errorAlertOpen: true,
+      })
+    }
   }
 
   async getLibraryInfo() {
-    const { libraryStartCount, libraryEndCount } = this.state;
-    const libraryListCount = libraryEndCount - libraryStartCount;
+    const { libraryStartCount, currentPage, libraryCountPerPage } = this.state;
     const apiKey = process.env.REACT_APP_SEOUL_API_KEY;
-    const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount}/${libraryEndCount}`;
+    const diff = (currentPage * libraryCountPerPage)
+    const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount + diff}/${libraryStartCount + diff + (libraryCountPerPage - 1)}`;
     try {
       const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
       this.setState({
         libraryList: row,
-        libraryListCount,
-        libraryTotalCount: list_total_count,
+        libraryListLength: row.length,
         currentPage: 0,
-        successAlertOpen: true,
       })
     } catch (err) {
-      this.setState({
-        errorAlertOpen: true,
-      })
+      throw new Error();
     }
     
   }
@@ -60,18 +67,9 @@ class Main extends Component {
     })
   }
 
-  handleSearch = async (e) => {
-    await this.getLibraryInfo();
-    this.setState({
-      currentPage: 0,
-    });
-  }
+  handleSearch = (e) => this.setState({ currentPage: 0 }, this.getLibraryInfo )
 
-  handlePagination = (e, value) => {
-    this.setState({
-      currentPage: value,
-    });
-  }
+  handlePagination = (e, value) => this.setState({ currentPage: value}, this.getLibraryInfo )
 
   handleSearchOptionChange = (value) => e => {
     this.setState({
@@ -188,6 +186,7 @@ class Main extends Component {
       }
       stateObj['libraryStartCount'] = start;
       stateObj['libraryEndCount'] = end;
+      stateObj['libraryTotalCount'] = (end - start);
       stateObj['searchText'] = '';
     }
     this.setState({
@@ -201,12 +200,16 @@ class Main extends Component {
       successAlertOpen,
       errorAlertOpen,
       libraryList,
-      libraryListCount,
+      libraryListLength,
+      libraryTotalCount,
       libraryStartCount,
       libraryEndCount,
       searchOption,
       selectedDistrict,
       searchText,
+    } = this.state;
+
+    let {
       libraryCountPerPage,
       currentPage
     } = this.state;
@@ -258,8 +261,14 @@ class Main extends Component {
       'address',
     ]
 
-    const totalPage = Math.round(libraryListCount / libraryCountPerPage) + ((libraryListCount % libraryCountPerPage) && 1) 
-  
+    if (!libraryList) {
+      return null;
+    }
+    if (libraryListLength > 0) {
+      let maxPageCount = Math.floor((libraryListLength - 1) / libraryCountPerPage)
+      if (maxPageCount < 0) maxPageCount = 0
+      if (currentPage > maxPageCount) currentPage = maxPageCount
+    }
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
@@ -306,7 +315,7 @@ class Main extends Component {
               />
             ))
           }
-          <CustomPagination totalPage={totalPage} currentPage={currentPage} handlePagination={this.handlePagination} />
+          <CustomPagination totalPage={Number(libraryTotalCount / libraryCountPerPage) + 1} currentPage={currentPage} handlePagination={this.handlePagination} />
         </Libraries>
 
       </Container>
