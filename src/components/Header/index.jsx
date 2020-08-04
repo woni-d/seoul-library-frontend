@@ -110,7 +110,7 @@ function Header(props) {
                 label="limit"
                 name="libraryEndCount"
                 value={libraryEndCount}
-                placeholder="개수 (limit)"
+                placeholder="끝 (end)"
                 type="number"
                 InputLabelProps={{
                   shrink: true,
@@ -157,6 +157,7 @@ function Header(props) {
                   name="searchText"
                   value={searchText}
                   autoComplete="searchKeyword"
+                  onChange={handleSearchValueChange}
               />
 
               <Button
