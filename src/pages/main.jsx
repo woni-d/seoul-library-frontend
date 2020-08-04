@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import dotenv from 'dotenv';
 import axios from 'axios';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -21,8 +20,8 @@ class Main extends Component {
       searchOption: 'selectedDistrict',
       selectedDistrict: '강남구',
       searchText: '',
-      libraryCountPerPage: 16, // default
-      currentPage: null,
+      libraryCountPerPage: 10, // default
+      currentPage: 0,
       successAlertOpen: false,
       errorAlertOpen: false,
     };
@@ -39,7 +38,6 @@ class Main extends Component {
     const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount}/${libraryEndCount}`;
     try {
       const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
-      
       this.setState({
         libraryList: row,
         libraryListCount,
@@ -62,12 +60,11 @@ class Main extends Component {
     })
   }
 
-  handleSearch = (e) => {
+  handleSearch = async (e) => {
+    await this.getLibraryInfo();
     this.setState({
       currentPage: 0,
     });
-
-    this.getLibraryInfo();
   }
 
   handlePagination = (e, value) => {
@@ -301,12 +298,11 @@ class Main extends Component {
         
         <Libraries>
           {
-            libraryList && 
-            libraryList.map((elem, idx) => (
+            (libraryList ? libraryList : Array.from({length: 10}, (v, i) => null)).map((elem, idx) => (
               <CustomCard
                 key={idx}
                 cardItem={elem}
-                loading={true}
+                loading={libraryList ? false : true}
               />
             ))
           }
