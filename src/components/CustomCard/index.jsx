@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
 import {
   Card,
-  CardActions,
   CardContent,
-  Button,
   Typography
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import MapView from './MapView';
 import './CustomCard.scss';
 
 class CardView extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { cardItem, loading } = this.props;
     return ( 
@@ -27,30 +22,47 @@ class CardView extends Component {
             <br />
 
             <Typography variant="body1">
-              {loading ? <Skeleton variant="text" /> : `구명: ${cardItem.CODE_VALUE}`}
+              {
+                loading
+                ? <Skeleton variant="text" /> 
+                : (cardItem.CODE_VALUE ? `구명: ${cardItem.CODE_VALUE}` : null)
+              }
             </Typography>
 
             <Typography variant="body1">
-              {loading ? <Skeleton variant="text" /> : `주소: ${cardItem.ADRES}`}
+              {
+                loading
+                ? <Skeleton variant="text" /> 
+                : (cardItem.ADRES ? `주소: ${cardItem.ADRES}` : null)
+              }
             </Typography>
 
             <Typography variant="body1">
-              {loading ? <Skeleton variant="text" /> : `정기 휴관일: ${cardItem.FDRM_CLOSE_DATE}`}
+              {
+                loading
+                ? <Skeleton variant="text" /> 
+                : (cardItem.FDRM_CLOSE_DATE ? `정기 휴관일: ${cardItem.FDRM_CLOSE_DATE}` : null)
+              }
             </Typography>
 
             <Typography variant="body1">
-              {loading ? <Skeleton variant="text" /> : `전화번호: ${cardItem.TEL_NO}`}
+              {
+                loading
+                ? <Skeleton variant="text" /> 
+                : (cardItem.TEL_NO ? `전화번호: ${cardItem.TEL_NO}` : null)
+              }
             </Typography>
 
-            <div className="map-wrapper">
-              <Skeleton variant="rect" animation="wave" height={250} />
-            </div>
-
+            {
+              // loading
+              // ? <Skeleton variant="rect" animation="wave" width={500} height={250} /> 
+              // : <MapView
+              //     id={cardItem.LBRRY_SEQ_NO}
+              //     x={cardItem.XCNTS}
+              //     y={cardItem.YDNTS}
+              //   />
+            }
           </CardContent>
-
-          <CardActions>
-            <Button>Map</Button>
-          </CardActions>
         </Card>
       </>
     );
