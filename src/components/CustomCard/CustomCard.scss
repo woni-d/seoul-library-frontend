@@ -1,11 +1,18 @@
 .library-wrapper {
-    min-width: 90%;
+    min-width: 80%;
+    max-width: 90%;
     transition: transform 30s;
     border-top: 6px solid #32b67a;
+    margin: 30px auto;
     -webkit-border-bottom-left-radius: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-left-radius: 6px;
-	border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    
+    & {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .library-wrapper:hover {
