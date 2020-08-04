@@ -12,10 +12,11 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      libraryAllCount: null,
       libraryList: null,
       libraryListLength: null,
-      libraryTotalCount: (53 - 1) + 1,
-      libraryStartCount: 1,
+      libraryTotalCount: (53 - 0) + 1,
+      libraryStartCount: 0,
       libraryEndCount: 53,
       searchOption: 'selectedDistrict',
       selectedDistrict: '강남구',
@@ -29,52 +30,81 @@ class Main extends Component {
   }
 
   async componentDidMount() {
-    try {
-      await this.getLibraryInfo();
-      this.setState({
-        successAlertOpen: true,
-      })
-    }
-    catch (err) {
-      this.setState({
-        errorAlertOpen: true,
-      })
-    }
+    // TODO: 구별 카운트 정의
+    await this.getLibraryInfo();
   }
 
   async getLibraryInfo() {
-    const { libraryStartCount, currentPage, libraryCountPerPage } = this.state;
+    const { searchOption, libraryStartCount, currentPage, libraryCountPerPage } = this.state;
     const apiKey = process.env.REACT_APP_SEOUL_API_KEY;
-    const diff = (currentPage * libraryCountPerPage)
-    const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount + diff}/${libraryStartCount + diff + (libraryCountPerPage - 1)}`;
-    try {
-      const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
-      this.setState({
-        libraryList: row,
-        libraryListLength: row.length,
-        currentPage: 0,
-      })
-    } catch (err) {
-      throw new Error();
+
+    if (searchOption === 'selectedDistrict') {
+      const diff = (currentPage * libraryCountPerPage)
+      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount + diff}/${libraryStartCount + diff + (libraryCountPerPage - 1)}`;
+      try {
+        const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
+        this.setState({
+          libraryAllCount: list_total_count,
+          libraryList: row,
+          libraryListLength: row.length,
+        })
+        this.setState({
+          successAlertOpen: true,
+        })
+      } catch (err) {
+        this.setState({
+          errorAlertOpen: true,
+        })
+      }
     }
-    
+    else {
+      const { searchText, libraryAllCount } = this.state;
+      try {
+        // TODO: handleChange 말고 검색
+        // TODO: KeyPress 이벤트
+        let libraryList = []
+        for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
+          const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`;
+          const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
+          libraryList = [...libraryList, ...row];
+        }
+
+        let filterField = null;
+        if (searchOption === 'name') {
+          filterField = 'LBRRY_NAME';
+        }
+        else {
+          filterField = 'ADRES';
+        }
+        const filteredLibraryList = libraryList.filter(elem => elem[filterField].includes(searchText));
+        this.setState({
+          libraryList: filteredLibraryList,
+          libraryTotalCount: filteredLibraryList.length,
+        });
+      } catch (err) {
+        console.log(err);
+        this.setState({
+          errorAlertOpen: true,
+        });
+      }
+    }
   }
 
   handleClose = (e) => {
     this.setState({
       successAlertOpen: false,
       errorAlertOpen: false,
-    })
+    });
   }
 
-  handleSearch = (e) => this.setState({ currentPage: 0 }, this.getLibraryInfo )
+  handleSearch = (e) => this.setState({ currentPage: 0 }, this.getLibraryInfo)
 
-  handlePagination = (e, value) => this.setState({ currentPage: value}, this.getLibraryInfo )
+  handlePagination = (e, value) => this.setState({ currentPage: value}, this.getLibraryInfo)
 
   handleSearchOptionChange = (value) => e => {
     this.setState({
       searchOption: value === 0 ? 'selectedDistrict' : 'name',
-    })
+    });
   }
 
   handleChange = e => {
@@ -189,10 +219,17 @@ class Main extends Component {
       stateObj['libraryTotalCount'] = (end - start);
       stateObj['searchText'] = '';
     }
+    if (e.target.name === 'libraryStartCount' || e.target.name === 'libraryEndCount') {
+      stateObj[e.target.name] = Number(e.target.value);
+      const targetCountState = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount';
+      stateObj[targetCountState] = this.state[targetCountState];
+      stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount']) + 1;
+    }
     this.setState({
       [e.target.name]: e.target.value,
       ...stateObj,
-    });
+      currentPage: 1,
+    }, this.getLibraryInfo);
   }
   
 	render() {
@@ -315,7 +352,7 @@ class Main extends Component {
               />
             ))
           }
-          <CustomPagination totalPage={Number(libraryTotalCount / libraryCountPerPage) + 1} currentPage={currentPage} handlePagination={this.handlePagination} />
+          <CustomPagination totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)} currentPage={currentPage} handlePagination={this.handlePagination} />
         </Libraries>
 
       </Container>
