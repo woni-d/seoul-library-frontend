@@ -15,7 +15,7 @@ function App() {
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
         <title>Seoul Library</title>
         <link rel="canonical" href="http://127.0.0.1:3000" />
-        <script type="text/javascript" src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}`}></script>
+        <script type="text/javascript" src={/* https */`//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services&autoload=false`} />
       </Helmet>
       <Pages />
     </div>
