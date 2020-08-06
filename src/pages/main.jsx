@@ -16,116 +16,17 @@ class Main extends Component {
     this.state = {
       libraryAllCount: null,
       libraryList: null,
-      libraryListLength: null,
       libraryTotalCount: 1,
       libraryStartCount: 1, // Open API 인덱스 1부터 시작
       libraryEndCount: 1,
+
       districtOptionKeys: [],
       districtOption: null,
-        // '강남구': {
-        //   start: 1,
-        //   end: 53,
-        // },
-        // '강동구': {
-        //   start: 54,
-        //   end: 104,
-        // },
-        // '강북구': {
-        //   start: 105,
-        //   end: 157,
-        // },
-        // '강서구': {
-        //   start: 158,
-        //   end: 239,
-        // },
-        // '관악구': {
-        //   start: 240,
-        //   end: 293,
-        // },
-        // '광진구': {
-        //   start: 294,
-        //   end: 330,
-        // },
-        // '구로구': {
-        //   start: 331,
-        //   end: 411,
-        // },
-        // '금천구': {
-        //   start: 412,
-        //   end: 436,
-        // },
-        // '노원구': {
-        //   start: 437,
-        //   end: 482,
-        // },
-        // '도봉구': {
-        //   start: 483,
-        //   end: 526,
-        // },
-        // '동대문구': {
-        //   start: 527,
-        //   end: 568,
-        // },
-        // '동작구': {
-        //   start: 569,
-        //   end: 620,
-        // },
-        // '마포구': {
-        //   start: 621,
-        //   end: 674,
-        // },
-        // '서대문구': {
-        //   start: 675,
-        //   end: 709,
-        // },
-        // '성동구': {
-        //   start: 779,
-        //   end: 812,
-        // },
-        // '성북구': {
-        //   start: 813,
-        //   end: 880,
-        // },
-        // '서초구': {
-        //   start: 710,
-        //   end: 778,
-        // },
-        // '송파구': {
-        //   start: 881,
-        //   end: 962,
-        // },
-        // '영등포구': {
-        //   start: 1013,
-        //   end: 1068,
-        // },
-        // '용산구': {
-        //   start: 1069,
-        //   end: 1124,
-        // },
-        // '양천구': {
-        //   start: 963,
-        //   end: 1012,
-        // },
-        // '은평구': {
-        //   start: 1125,
-        //   end: 1222,
-        // },
-        // '종로구': {
-        //   start: 1223,
-        //   end: 1272,
-        // },
-        // '중구': {
-        //   start: 1273,
-        //   end: 1315,
-        // },
-        // '중랑구': {
-        //   start: 1316,
-        //   end: 1366,
-        // },
       searchOption: 'selectedDistrict',
       selectedDistrict: '-----',
       searchText: '',
-      libraryCountPerPage: 5, // default
+
+      libraryCountPerPage: 4, // default. 페이지별 5개 의미
       currentPage: 1,
 
       successAlertOpen: false,
@@ -167,8 +68,7 @@ class Main extends Component {
       selectedDistrict: firstDistrictOption,
       libraryTotalCount: districtOption[firstDistrictOption].end - districtOption[firstDistrictOption].start,
       libraryStartCount: districtOption[firstDistrictOption].start,
-      libraryEndCount: districtOption[firstDistrictOption].start + 5,
-
+      libraryEndCount: districtOption[firstDistrictOption].end,
     }, this.getLibraryInfo)
   }
 
@@ -176,19 +76,21 @@ class Main extends Component {
     const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state;
 
     if (searchOption === 'selectedDistrict') {
-      const diff = ((currentPage - 1) * libraryCountPerPage)
-      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCount + diff}/${libraryEndCount + diff}`;
+      const diff = ((currentPage - 1) * (libraryCountPerPage + 1));
+      const libraryStartCountByPage = libraryStartCount + diff;
+      const libraryEndCountByPage = libraryStartCountByPage + libraryCountPerPage <= libraryEndCount ? libraryStartCountByPage + libraryCountPerPage : libraryEndCount;
+
+      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`;
       try {
         const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
         this.setState({
           libraryAllCount: list_total_count,
           libraryList: row,
-          libraryListLength: row.length,
-        })
-        this.setState({
+
           successAlertOpen: true,
         })
       } catch (err) {
+        console.log(err);
         this.setState({
           errorAlertOpen: true,
         })
@@ -234,7 +136,7 @@ class Main extends Component {
     });
   }
 
-  handleSearch = (e) => this.setState({ currentPage: 0 }, this.getLibraryInfo)
+  handleSearch = (e) => this.setState({ currentPage: 1 }, this.getLibraryInfo)
 
   handlePagination = (e, value) => this.setState({ currentPage: value }, this.getLibraryInfo)
 
@@ -261,7 +163,7 @@ class Main extends Component {
       stateObj[e.target.name] = Number(e.target.value);
       const targetCountState = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount';
       stateObj[targetCountState] = this.state[targetCountState];
-      stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount']) + 1;
+      stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount']);
     }
     this.setState({
       [e.target.name]: e.target.value,
@@ -272,17 +174,18 @@ class Main extends Component {
   
 	render() {
     const {
-      successAlertOpen,
-      errorAlertOpen,
       districtOptionKeys,
-      libraryList,
-      libraryListLength,
-      libraryTotalCount,
-      libraryStartCount,
-      libraryEndCount,
       searchOption,
       selectedDistrict,
       searchText,
+
+      libraryList,
+      libraryTotalCount,
+      libraryStartCount,
+      libraryEndCount,
+
+      successAlertOpen,
+      errorAlertOpen,
     } = this.state;
 
     let {
@@ -313,8 +216,8 @@ class Main extends Component {
       return null;
     }
 
-    if (libraryListLength > 0) {
-      let maxPageCount = Math.floor((libraryListLength - 1) / libraryCountPerPage)
+    if (libraryTotalCount > 0) {
+      let maxPageCount = Math.floor((libraryTotalCount - 1) / libraryCountPerPage)
       if (maxPageCount < 0) maxPageCount = 0
       if (currentPage > maxPageCount) currentPage = maxPageCount
     }
@@ -365,7 +268,6 @@ class Main extends Component {
               />
             ))
           }
-          {/* { TODO: 페이지네이션 조정 } */}
           <CustomPagination totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)} currentPage={currentPage} handlePagination={this.handlePagination} />
         </Libraries>
 

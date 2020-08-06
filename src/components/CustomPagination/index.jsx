@@ -16,6 +16,7 @@ const CustomPagination = (props) => {
 
   return (
     <div className={classes.root}>
+      - {currentPage} -
       <Pagination
         count={totalPage}
         page={currentPage}
