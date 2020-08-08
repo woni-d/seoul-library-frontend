@@ -26,7 +26,7 @@ class Main extends Component {
       selectedDistrict: '-----',
       searchText: '',
 
-      libraryCountPerPage: 4, // default. 페이지별 5개 의미
+      libraryCountPerPage: 5, // default. 페이지별 5개 의미
       currentPage: 1,
 
       successAlertOpen: false,
@@ -76,9 +76,9 @@ class Main extends Component {
     const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state
 
     if (searchOption === 'selectedDistrict') {
-      const diff = ((currentPage - 1) * (libraryCountPerPage + 1))
+      const diff = ((currentPage - 1) * libraryCountPerPage)
       const libraryStartCountByPage = libraryStartCount + diff
-      const libraryEndCountByPage = libraryStartCountByPage + libraryCountPerPage <= libraryEndCount ? libraryStartCountByPage + libraryCountPerPage : libraryEndCount
+      const libraryEndCountByPage = libraryStartCountByPage + (libraryCountPerPage - 1) <= libraryEndCount ? libraryStartCountByPage + (libraryCountPerPage - 1) : libraryEndCount
 
       const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
       try {
@@ -117,7 +117,9 @@ class Main extends Component {
         const filteredLibraryList = libraryList.filter(elem => elem[filterField].includes(searchText))
         this.setState({
           libraryList: filteredLibraryList,
-          libraryTotalCount: filteredLibraryList.length,
+          libraryStartCount: 0,
+          libraryEndCount:0 ,
+          libraryTotalCount: 0,
         })
       } catch (err) {
         console.log(err)
@@ -219,7 +221,7 @@ class Main extends Component {
     }
 
     if (libraryTotalCount > 0) {
-      let maxPageCount = Math.floor((libraryTotalCount - 1) / libraryCountPerPage)
+      let maxPageCount = Math.floor((libraryTotalCount - 1) / (libraryCountPerPage - 1))
       if (maxPageCount < 0) maxPageCount = 0
       if (currentPage > maxPageCount) currentPage = maxPageCount
     }
@@ -270,7 +272,11 @@ class Main extends Component {
               />
             ))
           }
-          <CustomPagination totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)} currentPage={currentPage} handlePagination={this.handlePagination} />
+          <CustomPagination
+            totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)}
+            currentPage={currentPage}
+            handlePagination={this.handlePagination}
+          />
         </Libraries>
 
       </Container>

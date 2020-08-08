@@ -20,6 +20,7 @@ const CustomPagination = (props) => {
       <Pagination
         count={totalPage}
         page={currentPage}
+        disabled={totalPage === currentPage}
         onChange={handlePagination}
       />
     </div>
