@@ -26,7 +26,7 @@ class Main extends Component {
       selectedDistrict: '-----',
       searchText: '',
 
-      libraryCountPerPage: 5, // default. 페이지별 5개 의미
+      libraryCountPerPage: 5, // default
       currentPage: 1,
 
       successAlertOpen: false,
@@ -40,37 +40,44 @@ class Main extends Component {
 
     const { libraryAllCount } = this.state
     let libraryList = []
-    for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
-      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
-      const { data: { SeoulLibraryTimeInfo: { row } } } = await axios.get(libraryApiUri)
-      libraryList = [...libraryList, ...row]
-    }
-
     const districtOption = {}
-
-    libraryList.forEach((elem, idx) => { // idx는 0부터 시작
-      if (districtOption.hasOwnProperty(elem['CODE_VALUE'])) {
-        districtOption[elem['CODE_VALUE']].end ++
+    try {
+      for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
+        const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
+        const response = await axios.get(libraryApiUri)
+        const { status } = response
+        if (status !== 200) throw new Error()
+        const { data: { SeoulLibraryTimeInfo: { row } } } = response
+        libraryList = [...libraryList, ...row]
       }
-      else {
-        districtOption[elem['CODE_VALUE']] = {
-          start: idx + 1,
-          end: idx + 1,
+  
+      libraryList.forEach((elem, idx) => { // idx는 0부터 시작
+        if (districtOption.hasOwnProperty(elem['CODE_VALUE'])) {
+          districtOption[elem['CODE_VALUE']].end ++
         }
-      }
-    })
+        else {
+          districtOption[elem['CODE_VALUE']] = {
+            start: idx + 1,
+            end: idx + 1,
+          }
+        }
+      })
 
-    const districtOptionKeys = Object.keys(districtOption)
-    const firstDistrictOption = districtOptionKeys[0]
+      const districtOptionKeys = Object.keys(districtOption)
+      const firstDistrictOption = districtOptionKeys[0]
 
-    this.setState({
-      districtOptionKeys,
-      districtOption,
-      selectedDistrict: firstDistrictOption,
-      libraryTotalCount: districtOption[firstDistrictOption].end - districtOption[firstDistrictOption].start,
-      libraryStartCount: districtOption[firstDistrictOption].start,
-      libraryEndCount: districtOption[firstDistrictOption].end,
-    }, this.getLibraryInfo)
+      this.setState({
+        districtOptionKeys,
+        districtOption,
+        selectedDistrict: firstDistrictOption,
+        libraryTotalCount: districtOption[firstDistrictOption].end - districtOption[firstDistrictOption].start,
+        libraryStartCount: districtOption[firstDistrictOption].start,
+        libraryEndCount: districtOption[firstDistrictOption].end,
+      }, this.getLibraryInfo)
+    }
+    catch (err) {
+
+    }
   }
 
   async getLibraryInfo() {
@@ -87,7 +94,10 @@ class Main extends Component {
 
       const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
       try {
-        const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri)
+        const response = await axios.get(libraryApiUri)
+        const { status } = response
+        if (status !== 200) throw new Error()
+        const { data: { SeoulLibraryTimeInfo: { list_total_count, row } } } = response
         this.setState({
           libraryAllCount: list_total_count,
           libraryList: row,
@@ -107,8 +117,10 @@ class Main extends Component {
         let libraryList = []
         for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
           const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
-          const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri)
-          // TODO: statusText나 status로 
+          const response = await axios.get(libraryApiUri)
+          const { status } = response
+          if (status !== 200) throw new Error()
+          const { data: { SeoulLibraryTimeInfo: { list_total_count, row } } } = response
           libraryList = [...libraryList, ...row]
         }
 
@@ -270,6 +282,7 @@ class Main extends Component {
           searchOptionObj={searchOptionObj}
           searchTextOptionArr={searchTextOptionArr}
           selectedDistrict={selectedDistrict}
+          libraryTotalCount={libraryTotalCount}
           libraryStartCount={libraryStartCount}
           libraryEndCount={libraryEndCount}
           searchText={searchText}
