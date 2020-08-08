@@ -1,9 +1,9 @@
-import React from 'react';
-import { Pagination } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { Pagination } from '@material-ui/lab'
+import { makeStyles } from '@material-ui/core/styles'
 
 const CustomPagination = (props) => {
-  const { totalPage, currentPage, handlePagination } = props;
+  const { totalPage, currentPage, handlePagination } = props
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -11,8 +11,8 @@ const CustomPagination = (props) => {
         marginTop: theme.spacing(2),
       },
     },
-  }));
-  const classes = useStyles();
+  }))
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
@@ -26,4 +26,4 @@ const CustomPagination = (props) => {
   )
 }
 
-export default CustomPagination;
+export default CustomPagination

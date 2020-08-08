@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
-import { Route } from 'react-router-dom';
-import Main from './Main.jsx';
+import React, { Component, Fragment } from 'react'
+import { Route } from 'react-router-dom'
+import Main from './Main.jsx'
 
 class Index extends Component {
   render() {
@@ -14,8 +14,8 @@ class Index extends Component {
       <Fragment>
         { pages.map((elem, idx) => <Route key={idx} { ...elem } />) }
       </Fragment>
-    );
+    )
   }
 }
 
-export default Index;
+export default Index
