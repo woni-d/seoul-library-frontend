@@ -16,6 +16,7 @@ function App() {
         <title>Seoul Library</title>
         <link rel="canonical" href="http://127.0.0.1:3000" />
         <script type="text/javascript" src={/* https */`//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services&autoload=false`} />
+        <link href={"https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700&family=Song+Myung&display=swap"} rel="stylesheet" />
       </Helmet>
       <Pages />
     </div>

@@ -4,6 +4,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton, ButtonGroup } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import CustomSelect from '../CustomSelect'
+import './Header.scss'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props
@@ -65,13 +66,8 @@ function Header(props) {
 
   return (
     <div>
-      <div>
-        <Typography
-          variant = "h3"
-          component = "h1"
-        >
-          서울 도서관 조회 서비스
-        </Typography>
+      <div className="header-title-wrapper">
+        <h1>서울 도서관 조회 서비스</h1>
       </div>
       <div>
         <AppBar position="static" color="default">
