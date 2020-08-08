@@ -31,6 +31,7 @@ class Main extends Component {
 
       successAlertOpen: false,
       errorAlertOpen: false,
+      linearProgressShow: false,
     }
   }
 
@@ -74,6 +75,10 @@ class Main extends Component {
 
   async getLibraryInfo() {
     const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state
+
+    this.setState({
+      linearProgressShow: true,
+    })
 
     if (searchOption === 'selectedDistrict') {
       const diff = ((currentPage - 1) * libraryCountPerPage)
@@ -128,6 +133,10 @@ class Main extends Component {
         })
       }
     }
+
+    this.setState({
+      linearProgressShow: false,
+    })
   }
 
   handleClose = (e) => {
@@ -190,6 +199,7 @@ class Main extends Component {
 
       successAlertOpen,
       errorAlertOpen,
+      linearProgressShow,
     } = this.state
 
     let {
@@ -246,9 +256,12 @@ class Main extends Component {
           handleSearch={this.handleSearch}
         />
       
-        <div>
-          <LinearProgress />
-        </div>
+        {
+          linearProgressShow &&
+          <div>
+            <LinearProgress />
+          </div>
+        }
 
         <Snackbar open={successAlertOpen} autoHideDuration={3000} onClose={this.handleClose}>
           <Alert onClose={this.handleClose} severity="success">

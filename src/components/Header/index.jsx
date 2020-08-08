@@ -67,7 +67,7 @@ function Header(props) {
   return (
     <div>
       <div className="header-title-wrapper">
-        <h1>서울 도서관 조회 서비스</h1>
+        <h1>서울시 도서관 조회 서비스</h1>
       </div>
       <div>
         <AppBar position="static" color="default">
