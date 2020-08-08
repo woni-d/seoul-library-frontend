@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton, ButtonGroup } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import CustomSelect from '../CustomSelect';
+import React from 'react'
+import PropTypes from 'prop-types'
+import SwipeableViews from 'react-swipeable-views'
+import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton, ButtonGroup } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
+import CustomSelect from '../CustomSelect'
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -22,14 +22,14 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};
+}
 
 function Header(props) {
   const {
@@ -46,20 +46,20 @@ function Header(props) {
     handleSearch
   } = props
 
-  const [value, setValue] = React.useState(searchOption === searchOptionObj.district.prop ? 0 : 1);
+  const [value, setValue] = React.useState(searchOption === searchOptionObj.district.prop ? 0 : 1)
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-    handleSearchOptionChange(newValue)();
-  };
+    setValue(newValue)
+    handleSearchOptionChange(newValue)()
+  }
 
   const handleChangeIndex = (index) => {
-    setValue(index);
-  };
+    setValue(index)
+  }
 
   const handleKeyPress = (event) => {
     if(event.key === 'Enter'){
-      handleSearch();
+      handleSearch()
     }
   }
 
@@ -175,4 +175,4 @@ function Header(props) {
   )
 }
 
-export default Header;
+export default Header

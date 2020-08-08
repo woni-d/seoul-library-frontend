@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import { Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
-import Header from '../components/Header';
-import CustomCard from '../components/CustomCard';
-import LinearProgress from '../components/LinearProgress';
-import CustomPagination from '../components/CustomPagination';
-import { Container, Libraries } from './Main.style';
+import React, { Component } from 'react'
+import axios from 'axios'
+import { Snackbar } from '@material-ui/core'
+import MuiAlert from '@material-ui/lab/Alert'
+import Header from '../components/Header'
+import CustomCard from '../components/CustomCard'
+import LinearProgress from '../components/LinearProgress'
+import CustomPagination from '../components/CustomPagination'
+import { Container, Libraries } from './Main.style'
 
-const apiKey = process.env.REACT_APP_SEOUL_API_KEY;
+const apiKey = process.env.REACT_APP_SEOUL_API_KEY
 
 class Main extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       libraryAllCount: null,
       libraryList: null,
@@ -31,25 +31,25 @@ class Main extends Component {
 
       successAlertOpen: false,
       errorAlertOpen: false,
-    };
+    }
   }
 
   async componentDidMount() {
-    await this.getLibraryInfo();
+    await this.getLibraryInfo()
 
-    const { libraryAllCount } = this.state;
+    const { libraryAllCount } = this.state
     let libraryList = []
     for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
-      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`;
-      const { data: { SeoulLibraryTimeInfo: { row } } } = await axios.get(libraryApiUri);
-      libraryList = [...libraryList, ...row];
+      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
+      const { data: { SeoulLibraryTimeInfo: { row } } } = await axios.get(libraryApiUri)
+      libraryList = [...libraryList, ...row]
     }
 
     const districtOption = {}
 
     libraryList.forEach((elem, idx) => { // idx는 0부터 시작
       if (districtOption.hasOwnProperty(elem['CODE_VALUE'])) {
-        districtOption[elem['CODE_VALUE']].end ++;
+        districtOption[elem['CODE_VALUE']].end ++
       }
       else {
         districtOption[elem['CODE_VALUE']] = {
@@ -73,16 +73,16 @@ class Main extends Component {
   }
 
   async getLibraryInfo() {
-    const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state;
+    const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state
 
     if (searchOption === 'selectedDistrict') {
-      const diff = ((currentPage - 1) * (libraryCountPerPage + 1));
-      const libraryStartCountByPage = libraryStartCount + diff;
-      const libraryEndCountByPage = libraryStartCountByPage + libraryCountPerPage <= libraryEndCount ? libraryStartCountByPage + libraryCountPerPage : libraryEndCount;
+      const diff = ((currentPage - 1) * (libraryCountPerPage + 1))
+      const libraryStartCountByPage = libraryStartCount + diff
+      const libraryEndCountByPage = libraryStartCountByPage + libraryCountPerPage <= libraryEndCount ? libraryStartCountByPage + libraryCountPerPage : libraryEndCount
 
-      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`;
+      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
       try {
-        const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
+        const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri)
         this.setState({
           libraryAllCount: list_total_count,
           libraryList: row,
@@ -90,41 +90,40 @@ class Main extends Component {
           successAlertOpen: true,
         })
       } catch (err) {
-        console.log(err);
+        console.log(err)
         this.setState({
           errorAlertOpen: true,
         })
       }
     }
     else {
-      const { searchText, libraryAllCount } = this.state;
+      const { searchText, libraryAllCount } = this.state
       try {
-        // TODO: KeyPress 이벤트
         let libraryList = []
         for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
-          const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`;
-          const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri);
+          const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
+          const { config, data: { SeoulLibraryTimeInfo: { list_total_count, row } }, headers, request, status, statusText } = await axios.get(libraryApiUri)
           // TODO: statusText나 status로 
-          libraryList = [...libraryList, ...row];
+          libraryList = [...libraryList, ...row]
         }
 
-        let filterField = null;
+        let filterField = null
         if (searchOption === 'name') {
-          filterField = 'LBRRY_NAME';
+          filterField = 'LBRRY_NAME'
         }
         else {
-          filterField = 'ADRES';
+          filterField = 'ADRES'
         }
-        const filteredLibraryList = libraryList.filter(elem => elem[filterField].includes(searchText));
+        const filteredLibraryList = libraryList.filter(elem => elem[filterField].includes(searchText))
         this.setState({
           libraryList: filteredLibraryList,
           libraryTotalCount: filteredLibraryList.length,
-        });
+        })
       } catch (err) {
-        console.log(err);
+        console.log(err)
         this.setState({
           errorAlertOpen: true,
-        });
+        })
       }
     }
   }
@@ -133,7 +132,7 @@ class Main extends Component {
     this.setState({
       successAlertOpen: false,
       errorAlertOpen: false,
-    });
+    })
   }
 
   handleSearch = (e) => this.setState({ currentPage: 1 }, this.getLibraryInfo)
@@ -143,35 +142,35 @@ class Main extends Component {
   handleSearchOptionChange = (value) => e => {
     this.setState({
       searchOption: value === 0 ? 'selectedDistrict' : 'name',
-    });
+    })
   }
 
   handleChange = e => {
-    const stateObj = {};
+    const stateObj = {}
     if (e.target.name === 'selectedDistrict') {
-      let selectedDistrict = e.target.value;
-      const { districtOption } = this.state;
-      let start, end;
-      start = districtOption[selectedDistrict].start;
-      end = districtOption[selectedDistrict].end;
-      stateObj['libraryStartCount'] = start;
-      stateObj['libraryEndCount'] = end;
-      stateObj['libraryTotalCount'] = (end - start);
-      stateObj['searchText'] = '';
+      let selectedDistrict = e.target.value
+      const { districtOption } = this.state
+      let start, end
+      start = districtOption[selectedDistrict].start
+      end = districtOption[selectedDistrict].end
+      stateObj['libraryStartCount'] = start
+      stateObj['libraryEndCount'] = end
+      stateObj['libraryTotalCount'] = (end - start)
+      stateObj['searchText'] = ''
     }
     if (e.target.name === 'libraryStartCount' || e.target.name === 'libraryEndCount') {
-      stateObj[e.target.name] = Number(e.target.value);
-      const targetCountState = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount';
-      stateObj[targetCountState] = this.state[targetCountState];
-      stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount']);
+      stateObj[e.target.name] = Number(e.target.value)
+      const targetCountState = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount'
+      stateObj[targetCountState] = this.state[targetCountState]
+      stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount'])
     }
     this.setState({
       [e.target.name]: e.target.value,
       ...stateObj,
-    });
+    })
 
     if (e.target.name !== 'searchOption' && e.target.name !== 'searchText') {
-      this.handleSearch();
+      this.handleSearch()
     }
   }
   
@@ -189,12 +188,12 @@ class Main extends Component {
 
       successAlertOpen,
       errorAlertOpen,
-    } = this.state;
+    } = this.state
 
     let {
       libraryCountPerPage,
       currentPage
-    } = this.state;
+    } = this.state
 
     const searchOptionObj = {
       district: {
@@ -209,14 +208,14 @@ class Main extends Component {
         prop: 'address',
         label: '도서관주소',
       }
-    };
+    }
     const searchTextOptionArr = [
       'name',
       'address',
     ]
 
     if (!libraryList) {
-      return null;
+      return null
     }
 
     if (libraryTotalCount > 0) {
@@ -226,7 +225,7 @@ class Main extends Component {
     }
 
     function Alert(props) {
-      return <MuiAlert elevation={6} variant="filled" {...props} />;
+      return <MuiAlert elevation={6} variant="filled" {...props} />
     }
 
     return (
@@ -279,4 +278,4 @@ class Main extends Component {
 	}
 }
 
-export default Main;
+export default Main

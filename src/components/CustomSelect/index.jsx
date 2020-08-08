@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import React, { Component } from 'react'
+import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 
 class CustomSelect extends Component {
     render() {
-      const { label, name, value, list, handleSearchValueChange } = this.props;
+      const { label, name, value, list, handleSearchValueChange } = this.props
       return (
         <>
           <FormControl variant="outlined">
@@ -22,8 +22,8 @@ class CustomSelect extends Component {
             </Select>
           </FormControl>
         </>
-      );
+      )
     }
 }
 
-export default CustomSelect;
+export default CustomSelect

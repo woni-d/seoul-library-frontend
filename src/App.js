@@ -1,13 +1,13 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import dotenv from 'dotenv';
-import Pages from './pages';
-import './App.css';
+import React from 'react'
+import { Helmet } from 'react-helmet'
+import dotenv from 'dotenv'
+import Pages from './pages'
+import './App.css'
 
-dotenv.config();
+dotenv.config()
 
 function App() {
-  const apiKey = process.env.REACT_APP_KAKAO_API_KEY;
+  const apiKey = process.env.REACT_APP_KAKAO_API_KEY
   return (
     <div className="App">
       <Helmet>
@@ -19,7 +19,7 @@ function App() {
       </Helmet>
       <Pages />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

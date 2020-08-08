@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   Card,
   CardContent,
   Typography
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import MapView from './MapView';
-import './CustomCard.scss';
+} from '@material-ui/core'
+import { Skeleton } from '@material-ui/lab'
+import MapView from './MapView'
+import './CustomCard.scss'
 
 class CardView extends Component {
   render() {
-    const { cardItem, loading } = this.props;
+    const { cardItem, loading } = this.props
     return ( 
       <>
         <Card className='library-wrapper'>
@@ -66,8 +66,8 @@ class CardView extends Component {
           </CardContent>
         </Card>
       </>
-    );
+    )
   }
 }
 
-export default CardView;
+export default CardView
