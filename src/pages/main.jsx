@@ -6,7 +6,7 @@ import Header from '../components/Header'
 import CustomCard from '../components/CustomCard'
 import LinearProgress from '../components/LinearProgress'
 import CustomPagination from '../components/CustomPagination'
-import { Container, Libraries } from './Main.style'
+import { Container, Libraries } from './main.style'
 
 const apiKey = process.env.REACT_APP_SEOUL_API_KEY
 
