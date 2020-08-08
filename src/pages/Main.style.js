@@ -14,5 +14,5 @@ export const Libraries = styled.div`
     -webkit-border-radius: 6px;
     border-radius: 6px;
 	margin: 10px auto;
-	border: 1px solid #d9d9d9;
+    border: 1px solid #d9d9d9;
 `;

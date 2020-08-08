@@ -1,4 +1,5 @@
 import React from 'react'
+import { Typography } from '@material-ui/core'
 import { Pagination } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -16,11 +17,10 @@ const CustomPagination = (props) => {
 
   return (
     <div className={classes.root}>
-      - {currentPage} -
+      <Typography>- {currentPage} -</Typography>
       <Pagination
         count={totalPage}
         page={currentPage}
-        disabled={totalPage === currentPage}
         onChange={handlePagination}
       />
     </div>
