@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import SwipeableViews from 'react-swipeable-views'
-import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton, ButtonGroup } from '@material-ui/core'
+import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import CustomSelect from '../CustomSelect'
 import './Header.scss'
@@ -87,45 +87,48 @@ function Header(props) {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0}>
-            <CustomSelect
-              label={searchOptionObj.district.label}
-              name={searchOptionObj.district.prop}
-              value={selectedDistrict}
-              list={districtList}
-              handleSearchValueChange={handleSearchValueChange}
-            />
+            <div className="header-district-tab-wrapper">
+              <CustomSelect
+                label={searchOptionObj.district.label}
+                name={searchOptionObj.district.prop}
+                value={selectedDistrict}
+                list={districtList}
+                handleSearchValueChange={handleSearchValueChange}
+              />
 
-            <div>
-              <TextField
-                label="start"
-                name="libraryStartCount"
-                value={libraryStartCount}
-                placeholder="시작 (start)"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={handleSearchValueChange}
-              />
-      
-              <TextField
-                label="limit"
-                name="libraryEndCount"
-                value={libraryEndCount}
-                placeholder="끝 (end)"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={handleSearchValueChange}
-              />
+              <div>
+                <TextField
+                  label="start"
+                  name="libraryStartCount"
+                  value={libraryStartCount}
+                  placeholder="시작 (start)"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={handleSearchValueChange}
+                />
+        
+                <TextField
+                  label="limit"
+                  name="libraryEndCount"
+                  value={libraryEndCount}
+                  placeholder="끝 (end)"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={handleSearchValueChange}
+                />
+              </div>
             </div>
 
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <div>
+            <div className="header-search-tab-wrapper">
               <FormControl variant="outlined">
+                <InputLabel>검색 옵션</InputLabel>
                 <Select
                   label="검색 옵션"
                   name="searchOption"
@@ -145,24 +148,26 @@ function Header(props) {
                 </Select>
               </FormControl>
 
-              <TextField
-                  label={searchOptionObj.hasOwnProperty(searchOption) ? searchOptionObj[searchOption].label : 'None'}
-                  name="searchText"
-                  value={searchText}
-                  autoComplete="searchKeyword"
-                  onChange={handleSearchValueChange}
-                  onKeyPress={handleKeyPress}
-              />
+              <div>
+                <TextField
+                    label={searchOptionObj.hasOwnProperty(searchOption) ? searchOptionObj[searchOption].label : 'None'}
+                    name="searchText"
+                    value={searchText}
+                    autoComplete="searchKeyword"
+                    onChange={handleSearchValueChange}
+                    onKeyPress={handleKeyPress}
+                />
 
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                endIcon={<SearchIcon />}
-                onClick={handleSearch}
-              >
-                검색
-              </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  endIcon={<SearchIcon />}
+                  onClick={handleSearch}
+                >
+                  검색
+                </Button>
+              </div>
             </div>
           </TabPanel>
         </SwipeableViews>
