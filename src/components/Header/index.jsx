@@ -39,6 +39,7 @@ function Header(props) {
     searchOptionObj,
     searchTextOptionArr,
     selectedDistrict,
+    libraryTotalCount,
     libraryStartCount,
     libraryEndCount,
     searchText,
@@ -103,8 +104,11 @@ function Header(props) {
                   value={libraryStartCount}
                   placeholder="시작 (start)"
                   type="number"
-                  InputLabelProps={{
-                    shrink: true,
+                  InputProps={{
+                    inputProps: {
+                      min: 1,
+                      max: libraryTotalCount,
+                    }
                   }}
                   onChange={handleSearchValueChange}
                 />
