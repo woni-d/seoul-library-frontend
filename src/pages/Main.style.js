@@ -10,7 +10,7 @@ export const Container = styled.div`
 
 export const Libraries = styled.div`
     width: 100%;
-    background-color: #ccffcc;
+    background-color: #e3ead6;
     -webkit-border-radius: 6px;
     border-radius: 6px;
 	margin: 10px auto;
