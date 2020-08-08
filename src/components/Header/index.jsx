@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
-import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton } from '@material-ui/core';
+import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, Select, MenuItem, Button, IconButton, ButtonGroup } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CustomSelect from '../CustomSelect';
 
@@ -56,6 +56,12 @@ function Header(props) {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
+
+  const handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      handleSearch();
+    }
+  }
 
   return (
     <div>
@@ -149,14 +155,15 @@ function Header(props) {
                   value={searchText}
                   autoComplete="searchKeyword"
                   onChange={handleSearchValueChange}
+                  onKeyPress={handleKeyPress}
               />
 
               <Button
-                onClick={handleSearch}
                 variant="contained"
                 color="primary"
                 size="large"
                 endIcon={<SearchIcon />}
+                onClick={handleSearch}
               >
                 검색
               </Button>
