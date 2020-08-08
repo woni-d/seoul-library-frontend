@@ -168,8 +168,11 @@ class Main extends Component {
     this.setState({
       [e.target.name]: e.target.value,
       ...stateObj,
-      currentPage: 1,
-    } , this.getLibraryInfo );
+    });
+
+    if (e.target.name !== 'searchOption' && e.target.name !== 'searchText') {
+      this.handleSearch();
+    }
   }
   
 	render() {

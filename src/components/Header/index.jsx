@@ -117,16 +117,6 @@ function Header(props) {
                 }}
                 onChange={handleSearchValueChange}
               />
-
-              <Button
-                onClick={handleSearchValueChange}
-                variant="contained"
-                color="primary"
-                size="large"
-                endIcon={<SearchIcon />}
-              >
-                검색
-              </Button>
             </div>
 
           </TabPanel>
