@@ -151,8 +151,30 @@ class Main extends Component {
   handlePagination = (e, value) => this.setState({ currentPage: value }, this.getLibraryInfo)
 
   handleSearchOptionChange = (value) => e => {
+    const stateObj = {}
+    const { districtOptionKeys, districtOption } = this.state
+    console.log(value)
+
+    if (value === 0) {
+      stateObj['searchOption'] = 'selectedDistrict'
+      if (districtOptionKeys.length > 0) {
+        stateObj['libraryStartCount'] = districtOption[districtOptionKeys[0]].start
+        stateObj['libraryEndCount'] = districtOption[districtOptionKeys[0]].end
+      }
+      else {
+        stateObj['libraryStartCount'] = 1
+        stateObj['libraryEndCount'] = 1
+      }
+    }
+    else {
+      stateObj['searchOption'] = 'name'
+      stateObj['searchText'] = '' 
+    }
+
+    console.log(stateObj)
+
     this.setState({
-      searchOption: value === 0 ? 'selectedDistrict' : 'name',
+      ...stateObj,
     })
   }
 
