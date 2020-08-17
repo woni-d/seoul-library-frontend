@@ -1,9 +1,20 @@
 /* global kakao */
 import React, { Component } from 'react'
+import { Button } from '@material-ui/core'
 
 class MapView extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      map: null,
+      mapLevel: 3,
+    }
+  }
+
   componentDidMount() {
     const { id, x, y } = this.props
+    const { mapLevel } = this.state
     try {
       if (!id || !x || !y) {
         throw new Error('Not Kakao Map!')
@@ -14,13 +25,17 @@ class MapView extends Component {
         const centerPosition = new kakao.maps.LatLng(Number(x), Number(y)) 
         const options = {
           center: centerPosition, // 지도의 중심좌표
-          level: 3 // 지도의 확대 레벨
+          level: mapLevel // 지도의 확대 레벨
         }
         const map = new kakao.maps.Map(container, options)
         const marker = new kakao.maps.Marker({
             position: centerPosition
         })
         marker.setMap(map)
+
+        this.setState({
+          map,
+        })
       } else {
         const apiKey = process.env.REACT_APP_KAKAO_API_KEY
         const script = document.createElement('script')
@@ -34,18 +49,55 @@ class MapView extends Component {
     }
   }
 
+  zoomIn = () => { // 확대
+    const map = this.state.map
+    const level = map.getLevel();
+    map.setLevel(level - 1);
+  }
+
+  zoomOut = () => { // 축소
+    const map = this.state.map
+    const level = map.getLevel();
+    map.setLevel(level + 1);
+  }
+
   render() {
     const { id, x, y } = this.props
     const mapClassName = (!id || !x || !y) ? 'map-alt-wrapper': 'map-wrapper'
 
     return (
-      // eslint-disable-next-line react/jsx-no-target-blank
-      <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
-        <div className={mapClassName}>
-          { mapClassName === 'map-wrapper' || 'Google 지도로 이동하기' }
-            <div id={id}>{ mapClassName === 'map-wrapper' && 'Google 지도로 이동하기' }</div>
-        </div>
-      </a>
+      <>
+        {
+          mapClassName === 'map-wrapper'
+          &&
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={this.zoomIn}
+            >
+              +
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={this.zoomOut}
+            >
+              -
+            </Button>
+          </div>
+        }
+
+        <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
+          <div className={mapClassName}>
+            { mapClassName === 'map-wrapper' || 'Google 지도로 이동하기' }
+              <div id={id}>{ mapClassName === 'map-wrapper' && 'Google 지도로 이동하기' }</div>
+          </div>
+        </a>
+      </>
     )
   }
 }
