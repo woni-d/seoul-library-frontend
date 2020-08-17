@@ -2,26 +2,19 @@
 import React, { Component } from 'react'
 
 class MapView extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isLoadingComplated: false,
-    }
-  }
-
   componentDidMount() {
     const { id, x, y } = this.props
-    const container = document.getElementById(id)
     try {
       if (!id || !x || !y) {
         throw new Error('Not Kakao Map!')
       }
+      const container = document.getElementById(id)
 
       if (window.kakao && window.kakao.hasOwnProperty('maps')) {
         const centerPosition = new kakao.maps.LatLng(Number(x), Number(y)) 
         const options = {
           center: centerPosition, // 지도의 중심좌표
-          level: 4 // 지도의 확대 레벨
+          level: 3 // 지도의 확대 레벨
         }
         const map = new kakao.maps.Map(container, options)
         const marker = new kakao.maps.Marker({
@@ -35,11 +28,6 @@ class MapView extends Component {
         script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services&autoload=false`
         document.head.appendChild(script)
       }
-
-      // 이전에 throw new Error()을 만나서 catch로 빠지면 isLoadingCompleted는 계속 false
-      this.setState({
-        isLoadingComplated: true,
-      })
     }
     catch (err) {
       console.log(err)
@@ -47,16 +35,15 @@ class MapView extends Component {
   }
 
   render() {
-    const props = this.props
-    const { isLoadingComplated } = this.state
-    const mapClassName = isLoadingComplated ? 'map-wrapper' : 'map-alt-wrapper'
-    console.log(this.state)
+    const { id, x, y } = this.props
+    const mapClassName = (!id || !x || !y) ? 'map-alt-wrapper': 'map-wrapper'
+
     return (
       // eslint-disable-next-line react/jsx-no-target-blank
-      <a href={`https://www.google.com/maps/search/?api=1&query=${props.x},${props.y}`} target='_blank'>
+      <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
         <div className={mapClassName}>
-            Google 지도로 이동하기
-            <div id={props.id} width={500} height={250}></div>
+          { mapClassName === 'map-wrapper' || 'Google 지도로 이동하기' }
+            <div id={id}>{ mapClassName === 'map-wrapper' && 'Google 지도로 이동하기' }</div>
         </div>
       </a>
     )
