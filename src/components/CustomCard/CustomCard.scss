@@ -32,6 +32,15 @@
     line-height: 50px;
 }
 
+.map-button-wrapper {
+    display: flex;
+    justify-content: space-around;
+
+    .map-buttons {
+        margin: 10px;
+    }
+}
+
 .map-wrapper {
     color: #000000;
     font-weight: 700;
@@ -43,5 +52,6 @@
     div {
         width: 100%;
         height: 250px;
+        line-height: 250px;
     }
 }

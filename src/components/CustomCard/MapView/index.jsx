@@ -1,6 +1,6 @@
 /* global kakao */
 import React, { Component } from 'react'
-import { Button } from '@material-ui/core'
+import { Button } from '@material-ui/core'       
 
 class MapView extends Component {
   constructor(props) {
@@ -8,6 +8,7 @@ class MapView extends Component {
 
     this.state = {
       map: null,
+      mapCenterPosition: null,
       mapLevel: 3,
     }
   }
@@ -35,6 +36,7 @@ class MapView extends Component {
 
         this.setState({
           map,
+          mapCenterPosition: centerPosition,
         })
       } else {
         const apiKey = process.env.REACT_APP_KAKAO_API_KEY
@@ -61,40 +63,59 @@ class MapView extends Component {
     map.setLevel(level + 1);
   }
 
+  panTo = () => {
+    const map = this.state.map
+    const centerPosition = this.state.mapCenterPosition
+    map.panTo(centerPosition);            
+  }
+
   render() {
     const { id, x, y } = this.props
+    const { map } = this.state
     const mapClassName = (!id || !x || !y) ? 'map-alt-wrapper': 'map-wrapper'
 
     return (
       <>
         {
-          mapClassName === 'map-wrapper'
+          (mapClassName === 'map-wrapper' && map)
           &&
-          <div>
+          <div className='map-button-wrapper'>
             <Button
-              variant="contained"
+              className="map-buttons"
+              variant="outlined"
               color="primary"
               size="large"
-              onClick={this.zoomIn}
+              onClick={this.panTo}
             >
-              +
+              도서관 위치로
             </Button>
 
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={this.zoomOut}
-            >
-              -
-            </Button>
+            <div className="map-buttons">
+              <Button
+                variant="outlined"
+                color="primary"
+                size="large"
+                onClick={this.zoomIn}
+              >
+                +
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="primary"
+                size="large"
+                onClick={this.zoomOut}
+              >
+                -
+              </Button>
+            </div>
           </div>
         }
 
         <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
           <div className={mapClassName}>
             { mapClassName === 'map-wrapper' || 'Google 지도로 이동하기' }
-              <div id={id}>{ mapClassName === 'map-wrapper' && 'Google 지도로 이동하기' }</div>
+              <div id={id}>{ (mapClassName === 'map-wrapper' && map) && 'Google 지도로 이동하기' }</div>
           </div>
         </a>
       </>
