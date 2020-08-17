@@ -165,7 +165,6 @@ class Main extends Component {
   handleSearchOptionChange = (value) => e => {
     const stateObj = {}
     const { districtOptionKeys, districtOption } = this.state
-    console.log(value)
 
     if (value === 0) {
       stateObj['searchOption'] = 'selectedDistrict'
@@ -182,8 +181,6 @@ class Main extends Component {
       stateObj['searchOption'] = 'name'
       stateObj['searchText'] = '' 
     }
-
-    console.log(stateObj)
 
     this.setState({
       ...stateObj,
@@ -317,10 +314,10 @@ class Main extends Component {
                 key={idx}
                 cardItem={elem}
                 loading={libraryList ? false : true}
+                isKakaoMap={(searchOption === 'selectedDistrict') ? true : false}
               />
             ))
           }
-          {/* TODO: pagination -> 기본에서 5인가를 클릭하니까 currentPage는 그대로 5인데 모든 정보가 다 뜬 것 같음 -> startCount, endCount가 각가 0 -> 동작 자체는 꽤 정상적으로 한다. 다른 문제인 것 같다. */}
           
           <CustomPagination
             totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)}

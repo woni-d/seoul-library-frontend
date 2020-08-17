@@ -10,7 +10,7 @@ import './CustomCard.scss'
 
 class CardView extends Component {
   render() {
-    const { cardItem, loading } = this.props
+    const { cardItem, loading, isKakaoMap } = this.props
     return ( 
       <>
         <Card className='library-wrapper'>
@@ -54,14 +54,13 @@ class CardView extends Component {
             </Typography>
 
             {
-              // TODO: Kakao Map API 처리
-              // loading
-              // ? <Skeleton variant="rect" animation="wave" width={500} height={250} /> 
-              // : <MapView
-              //     id={cardItem.LBRRY_SEQ_NO}
-              //     x={cardItem.XCNTS}
-              //     y={cardItem.YDNTS}
-              //   />
+              loading
+              ? <Skeleton variant="rect" animation="wave" width={500} height={250} /> 
+              : <MapView
+                  id={isKakaoMap ? cardItem.LBRRY_SEQ_NO : undefined}
+                  x={isKakaoMap ? cardItem.XCNTS : undefined}
+                  y={isKakaoMap ? cardItem.YDNTS : undefined}
+                />
             }
           </CardContent>
         </Card>
