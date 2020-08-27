@@ -22,13 +22,17 @@
 
     :first-child {
         flex-grow: 2;
+        margin-right: 10px;
     }
     :last-child {
         flex-grow: 3;
         display: flex;
+        justify-content: space-around;
         
         :first-child {
-            flex-grow: 10;
+            box-sizing: border-box;
+            margin-right: 10px;
+            flex-grow: 15;
         }
 
         :last-child {
