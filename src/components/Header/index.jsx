@@ -17,11 +17,13 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {
+        value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )
+      }
     </div>
   )
 }
@@ -60,7 +62,7 @@ function Header(props) {
   }
 
   const handleKeyPress = (event) => {
-    if(event.key === 'Enter'){
+    if (event.key === 'Enter') {
       handleSearch()
     }
   }
@@ -104,12 +106,7 @@ function Header(props) {
                   value={libraryStartCount}
                   placeholder="시작 (start)"
                   type="number"
-                  InputProps={{
-                    inputProps: {
-                      min: 1,
-                      max: libraryTotalCount,
-                    }
-                  }}
+                  InputProps={{ inputProps: { min: 1, max: libraryTotalCount } }}
                   onChange={handleSearchValueChange}
                 />
         
@@ -119,14 +116,11 @@ function Header(props) {
                   value={libraryEndCount}
                   placeholder="끝 (end)"
                   type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
+                  InputLabelProps={{ shrink: true }}
                   onChange={handleSearchValueChange}
                 />
               </div>
             </div>
-
           </TabPanel>
 
           <TabPanel value={value} index={1}>

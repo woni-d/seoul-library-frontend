@@ -20,6 +20,7 @@ class MapView extends Component {
       if (!id || !x || !y) {
         throw new Error('Not Kakao Map!')
       }
+      
       const container = document.getElementById(id)
 
       if (window.kakao && window.kakao.hasOwnProperty('maps')) {
@@ -42,7 +43,7 @@ class MapView extends Component {
         const apiKey = process.env.REACT_APP_KAKAO_API_KEY
         const script = document.createElement('script')
         script.onload = () => kakao.maps.load(this.initMap)
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services&autoload=false`
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`
         document.head.appendChild(script)
       }
     }

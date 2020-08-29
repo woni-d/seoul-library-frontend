@@ -39,8 +39,10 @@ class Main extends Component {
     await this.getLibraryInfo()
 
     const { libraryAllCount } = this.state
+
     let libraryList = []
     const districtOption = {}
+    
     try {
       for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
         const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
@@ -76,7 +78,7 @@ class Main extends Component {
       }, this.getLibraryInfo)
     }
     catch (err) {
-
+      console.log(err)
     }
   }
 
@@ -84,43 +86,39 @@ class Main extends Component {
     const { searchOption, libraryStartCount, libraryEndCount, currentPage, libraryCountPerPage } = this.state
 
     this.setState({
-      linearProgressShow: true,
+      linearProgressShow: true
     })
 
-    if (searchOption === 'selectedDistrict') {
-      const diff = ((currentPage - 1) * libraryCountPerPage)
-      const libraryStartCountByPage = libraryStartCount + diff
-      const libraryEndCountByPage = libraryStartCountByPage + (libraryCountPerPage - 1) <= libraryEndCount ? libraryStartCountByPage + (libraryCountPerPage - 1) : libraryEndCount
+    try {
+      if (searchOption === 'selectedDistrict') {
+        const diff = ((currentPage - 1) * libraryCountPerPage)
+        const libraryStartCountByPage = libraryStartCount + diff
+        const libraryEndCountByPage = libraryStartCountByPage + (libraryCountPerPage - 1) <= libraryEndCount ? libraryStartCountByPage + (libraryCountPerPage - 1) : libraryEndCount
+  
+        const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
 
-      const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
-      try {
         const response = await axios.get(libraryApiUri)
         const { status } = response
         if (status !== 200) throw new Error()
         const { data: { SeoulLibraryTimeInfo: { list_total_count, row } } } = response
+
         this.setState({
           libraryAllCount: list_total_count,
           libraryList: row,
 
-          successAlertOpen: true,
-        })
-      } catch (err) {
-        console.log(err)
-        this.setState({
-          errorAlertOpen: true,
+          successAlertOpen: true
         })
       }
-    }
-    else {
-      const { searchText, libraryAllCount } = this.state
-      try {
+      else {
+        const { searchText, libraryAllCount } = this.state
+
         let libraryList = []
         for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
           const libraryApiUri = `http://openapi.seoul.go.kr:8088/${apiKey}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
           const response = await axios.get(libraryApiUri)
           const { status } = response
           if (status !== 200) throw new Error()
-          const { data: { SeoulLibraryTimeInfo: { list_total_count, row } } } = response
+          const { data: { SeoulLibraryTimeInfo: { row } } } = response
           libraryList = [...libraryList, ...row]
         }
 
@@ -136,27 +134,24 @@ class Main extends Component {
           libraryList: filteredLibraryList,
           libraryStartCount: 0,
           libraryEndCount:0 ,
-          libraryTotalCount: 0,
-        })
-      } catch (err) {
-        console.log(err)
-        this.setState({
-          errorAlertOpen: true,
+          libraryTotalCount: 0
         })
       }
     }
+    catch (err) {
+      console.log(err)
+
+      this.setState({
+        errorAlertOpen: true
+      })
+    }
 
     this.setState({
-      linearProgressShow: false,
+      linearProgressShow: false
     })
   }
 
-  handleClose = (e) => {
-    this.setState({
-      successAlertOpen: false,
-      errorAlertOpen: false,
-    })
-  }
+  handleClose = (e) => this.setState({ successAlertOpen: false, errorAlertOpen: false })
 
   handleSearch = (e) => this.setState({ currentPage: 1 }, this.getLibraryInfo)
 
@@ -166,7 +161,7 @@ class Main extends Component {
     const stateObj = {}
     const { districtOptionKeys, districtOption } = this.state
 
-    if (value === 0) {
+    if (value === 0) { // district
       stateObj['searchOption'] = 'selectedDistrict'
       if (districtOptionKeys.length > 0) {
         stateObj['libraryStartCount'] = districtOption[districtOptionKeys[0]].start
@@ -177,18 +172,17 @@ class Main extends Component {
         stateObj['libraryEndCount'] = 1
       }
     }
-    else {
+    else { // search text
       stateObj['searchOption'] = 'name'
-      stateObj['searchText'] = '' 
+      stateObj['searchText'] = ''
     }
 
-    this.setState({
-      ...stateObj,
-    })
+    this.setState(stateObj)
   }
 
   handleChange = e => {
     const stateObj = {}
+
     if (e.target.name === 'selectedDistrict') {
       let selectedDistrict = e.target.value
       const { districtOption } = this.state
@@ -200,15 +194,17 @@ class Main extends Component {
       stateObj['libraryTotalCount'] = (end - start)
       stateObj['searchText'] = ''
     }
+
     if (e.target.name === 'libraryStartCount' || e.target.name === 'libraryEndCount') {
       stateObj[e.target.name] = Number(e.target.value)
       const targetCountState = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount'
       stateObj[targetCountState] = this.state[targetCountState]
       stateObj['libraryTotalCount'] = (stateObj['libraryEndCount'] - stateObj['libraryStartCount'])
     }
+
     this.setState({
       [e.target.name]: e.target.value,
-      ...stateObj,
+      ...stateObj
     })
 
     if (e.target.name !== 'searchOption' && e.target.name !== 'searchText') {
@@ -233,10 +229,7 @@ class Main extends Component {
       linearProgressShow,
     } = this.state
 
-    let {
-      libraryCountPerPage,
-      currentPage
-    } = this.state
+    let { libraryCountPerPage, currentPage } = this.state
 
     const searchOptionObj = {
       district: {
@@ -252,14 +245,13 @@ class Main extends Component {
         label: '도서관주소',
       }
     }
+
     const searchTextOptionArr = [
       'name',
       'address',
     ]
 
-    if (!libraryList) {
-      return null
-    }
+    if (!libraryList) return null
 
     if (libraryTotalCount > 0) {
       let maxPageCount = Math.floor((libraryTotalCount - 1) / (libraryCountPerPage - 1))
@@ -303,7 +295,7 @@ class Main extends Component {
 
         <Snackbar open={errorAlertOpen} autoHideDuration={3000} onClose={this.handleClose}>
           <Alert onClose={this.handleClose} severity="error">
-          도서관 정보를 불러오지 못했습니다.
+            도서관 정보를 불러오지 못했습니다.
           </Alert>
         </Snackbar>
         
@@ -319,11 +311,14 @@ class Main extends Component {
             ))
           }
           
-          <CustomPagination
-            totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)}
-            currentPage={currentPage}
-            handlePagination={this.handlePagination}
-          />
+          {
+            (searchOption === 'selectedDistrict') &&
+            <CustomPagination
+              totalPage={Math.floor((libraryTotalCount / libraryCountPerPage) + 1)}
+              currentPage={currentPage}
+              handlePagination={this.handlePagination}
+            />
+          }
         </Libraries>
 
       </Container>
