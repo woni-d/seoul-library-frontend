@@ -1,21 +1,20 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import Main from './main'
 
-class Index extends Component {
+class Pages extends Component {
   render() {
     const pages = [
       {
         path: '/',
-        component: Main,
+        component: import('./main'),
       },
     ]
     return (
-      <Fragment>
+      <>
         { pages.map((elem, idx) => <Route key={idx} { ...elem } />) }
-      </Fragment>
+      </>
     )
   }
 }
 
-export default Index
+export default Pages
