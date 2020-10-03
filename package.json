@@ -29,12 +29,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:bundle": "node ./dist/bundle",
-    "start:webpack": "webpack-dev-server --hot",
     "build": "react-scripts build",
-    "build:webpack": "webpack --config ./config/webpack.config",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:bundle": "node ./dist/bundle",
+    "start:devserver": "webpack-dev-server --config ./config/webpack.config --hot",
+    "build:webpack": "webpack --config ./config/webpack.config"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-syntax-jsx": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",

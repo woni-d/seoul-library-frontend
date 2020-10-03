@@ -1,12 +1,12 @@
 const path = require('path')
-const zlib = require('zlib');
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
-    entry: './src/index.js',
+    context: __dirname,
+    entry: path.join(__dirname, '..', '/src', 'index.js'),
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, '..', '/dist')
@@ -16,21 +16,24 @@ module.exports = {
         index: "index.html",
         port: 9000
     },
-    mode: 'none',
-    target: 'node',
+    mode: 'development',
     node: {
         fs: 'empty'
+    },
+    resolve: {
+        extensions: ['.jsx', '.js']
     },
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: path.join(__dirname, '..', '/node_modules'),
+                exclude: /(node_modules)/,
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react']
+                            presets: ['@babel/preset-env', '@babel/preset-react'],
+                            plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-syntax-jsx"]
                         }
                     }
                 ]
@@ -56,7 +59,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebPackPlugin({
-            template: './public/index.html',
+            template: '../public/index.html',
             filename: 'index.html'
         }),
         new MiniCssExtractPlugin(),

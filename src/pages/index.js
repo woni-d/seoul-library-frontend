@@ -6,7 +6,7 @@ class Pages extends Component {
     const pages = [
       {
         path: '/',
-        component: import('./main'),
+        component: import('./main.jsx'),
       },
     ]
     return (
