@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import dotenv from 'dotenv'
-import Pages from './pages'
+import Pages from './pages/index'
 import './App.css'
 
 dotenv.config()
