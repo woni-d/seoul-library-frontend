@@ -3,10 +3,13 @@ const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
     context: __dirname,
-    entry: path.join(__dirname, '..', '/src', 'index.js'),
+    entry: {
+        app: ['babel-polyfill', path.join(__dirname, '..', '/src', 'index.js')]
+    },
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, '..', '/dist')
@@ -20,6 +23,7 @@ module.exports = {
     node: {
         fs: 'empty'
     },
+    devtool: 'source-map',
     resolve: {
         extensions: ['.jsx', '.js']
     },
@@ -74,10 +78,11 @@ module.exports = {
             threshold: 10240,
             minRatio: 0.8,
             deleteOriginalAssets: false,
-          }),
+        }),
+        new Dotenv()
     ],
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
     }
-}
+};

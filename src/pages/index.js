@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
+import Main from './main.jsx'
 
 class Pages extends Component {
   render() {
     const pages = [
       {
         path: '/',
-        component: import('./main.jsx'),
+        component: <Main />,
       },
     ]
     return (
       <>
-        { pages.map((elem, idx) => <Route key={idx} { ...elem } />) }
+        <Route path="/" render={() => <Main />} />
       </>
     )
   }

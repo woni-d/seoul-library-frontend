@@ -1,10 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import dotenv from 'dotenv'
 import Pages from './pages/index'
 import './App.css'
-
-dotenv.config()
+// dotenv는 webpack plugins
 
 function App() {
   const apiKey = process.env.REACT_APP_KAKAO_API_KEY
