@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
     context: __dirname,
@@ -67,6 +68,10 @@ module.exports = {
             filename: 'index.html'
         }),
         new MiniCssExtractPlugin(),
+        new Dotenv(),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false
+        }),
         new CompressionPlugin({
             filename: '[path][base].br',
             algorithm: 'brotliCompress',
@@ -78,11 +83,10 @@ module.exports = {
             threshold: 10240,
             minRatio: 0.8,
             deleteOriginalAssets: false,
-        }),
-        new Dotenv()
+        })
     ],
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
     }
-};
+}
