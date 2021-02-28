@@ -41,7 +41,7 @@ class Main extends Component {
     })
 
     try {
-      const { libraryAllCount, districtOptionKeys } = this.state
+      const { libraryAllCount } = this.state
 
       let list = []
       const districtOption = {}
@@ -66,10 +66,11 @@ class Main extends Component {
         }
       })
 
+      const districtOptionKeys = Object.keys(districtOption)
       const defaultDistrict = districtOptionKeys[0]
 
       this.setState({
-        districtOptionKeys: Object.keys(districtOption),
+        districtOptionKeys: districtOptionKeys,
         districtOption,
         selectedDistrict: defaultDistrict,
         libraryTotalCount: districtOption[defaultDistrict].end - districtOption[defaultDistrict].start,
@@ -126,7 +127,10 @@ class Main extends Component {
         }
 
         const filterField = searchOption === 'name' ? 'LBRRY_NAME' : 'ADRES'
-        const filteredList = list.filter(elem => elem[filterField].includes(searchText))
+        let filteredList = []
+        if (searchText.length > 2) {
+          filteredList = list.filter(elem => elem[filterField].includes(searchText))
+        }
 
         this.setState({
           libraryList: filteredList,
@@ -182,10 +186,16 @@ class Main extends Component {
       stateObj['libraryTotalCount'] = (end - start)
       stateObj['searchText'] = ''
     } else if (e.target.name === 'libraryStartCount' || e.target.name === 'libraryEndCount') {
-      stateObj[e.target.name] = Number(e.target.value)
       const target = e.target.name === 'libraryStartCount' ? 'libraryEndCount' : 'libraryStartCount'
+      stateObj[e.target.name] = Number(e.target.value)
       stateObj[target] = this.state[target]
-      stateObj['libraryTotalCount'] = stateObj['libraryEndCount'] - stateObj['libraryStartCount']
+
+      const total = stateObj['libraryEndCount'] - stateObj['libraryStartCount']
+      stateObj['libraryTotalCount'] = total
+      
+      if (typeof total !== 'number' || total < 0) {
+        return
+      }
     }
 
     this.setState({
@@ -217,8 +227,6 @@ class Main extends Component {
       linearProgressShow,
     } = this.state
     let { currentPage } = this.state
-
-    if (!libraryList) return null
 
     if (libraryTotalCount > 0) {
       let maxPageCount = Math.floor((libraryTotalCount - 1) / (countPerPage - 1))
