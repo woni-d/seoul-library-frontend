@@ -9,99 +9,94 @@ class MapView extends Component {
     this.state = {
       map: null,
       mapCenterPosition: null,
-      mapLevel: 3
+      mapLevel: 3,
+      id: null
     }
   }
 
   componentDidMount() {
+    this.setMap()
+  }
+
+  setMap = () => {
     try {
       const { id, x, y } = this.props
       const { mapLevel } = this.state
 
-      if (!id || !x || !y) {
-        throw new Error('There was a problem importing the Kakao Map!')
-      }
-      
-      if (window.kakao && window.kakao.hasOwnProperty('maps')) {
-        const options = {
-          center: new kakao.maps.LatLng(Number(x), Number(y)), // 지도의 중심좌표
-          level: mapLevel // 지도의 확대 레벨
-        }
-        const container = document.getElementById(id)
-        const map = new kakao.maps.Map(container, options)
-        const marker = new kakao.maps.Marker({ position: options.center })
-        marker.setMap(map)
-
-        this.setState({
-          map,
-          mapCenterPosition: options.center
+      if (id) {
+        window.kakao.maps.load(() => {
+          const container = document.getElementById(id)
+          const options = {
+            center: new window.kakao.maps.LatLng(Number(x), Number(y)), // 지도의 중심좌표
+            level: mapLevel // 지도의 확대 레벨
+          }
+          const map = new window.kakao.maps.Map(container, options)
+          const marker = new window.kakao.maps.Marker({ position: options.center })
+          marker.setMap(map)
+  
+          this.setState({
+            map,
+            mapCenterPosition: options.center,
+            id
+          })
         })
-      } else {
-        const script = document.createElement('script')
-        script.onload = () => kakao.maps.load(this.initMap)
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_API_KEY}&autoload=false`
-        document.head.appendChild(script)
       }
     } catch (err) {
       console.log(err)
     }
   }
-
-  zoomIn = () => this.state.map.setLevel(this.state.map.getLevel() - 1) // 확대
-  zoomOut = () => this.state.map.setLevel(this.state.map.getLevel() + 1) // 축소
+  zoomIn = () => this.state.map.setLevel(this.state.map.getLevel() - 1)
+  zoomOut = () => this.state.map.setLevel(this.state.map.getLevel() + 1)
   panTo = () => this.state.map.panTo(this.state.mapCenterPosition)
 
   render() {
     const { id, x, y } = this.props
-    const { map } = this.state
-    const mapClassName = !id || !x || !y || !map ? 'map-alt-wrapper': 'map-wrapper'
+    
+    if (id !== this.state.id) {
+      this.setMap()
+    }
 
     return (
       <>
-        {
-          (map && mapClassName === 'map-wrapper')
-          &&
-          <div className='map-button-wrapper'>
+        <div className='map-button-wrapper'>
+          <Button
+            className="map-buttons"
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={this.panTo}
+          >
+            도서관 위치로
+          </Button>
+
+          <div className="map-buttons">
             <Button
-              className="map-buttons"
               variant="outlined"
               color="primary"
               size="large"
-              onClick={this.panTo}
+              onClick={this.zoomIn}
             >
-              도서관 위치로
+              +
             </Button>
 
-            <div className="map-buttons">
-              <Button
-                variant="outlined"
-                color="primary"
-                size="large"
-                onClick={this.zoomIn}
-              >
-                +
-              </Button>
-
-              <Button
-                variant="outlined"
-                color="primary"
-                size="large"
-                onClick={this.zoomOut}
-              >
-                -
-              </Button>
-            </div>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.zoomOut}
+            >
+              -
+            </Button>
           </div>
-        }
+        </div>
 
-        <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
-          <div className={mapClassName}>
-            {mapClassName === 'map-alt-wrapper' && 'Google 지도로 이동하기'}
-            <div id={id}>
-              {(map && mapClassName === 'map-wrapper') && 'Google 지도로 이동하기'}
-            </div>
+        <div className="map-wrapper">
+          <div id={id}>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
+              Google 지도로 이동하기
+            </a>
           </div>
-        </a>
+        </div>
       </>
     )
   }

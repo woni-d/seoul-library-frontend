@@ -22,16 +22,6 @@
     transform: translate(-10px, -10px);
 }
 
-.map-alt-wrapper {
-    color: #42993a;
-    font-weight: 700;
-    text-decoration: underline;
-    text-decoration-color: #42993a;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-}
-
 .map-button-wrapper {
     display: flex;
     justify-content: space-around;
@@ -53,5 +43,12 @@
         width: 100%;
         height: 250px;
         line-height: 250px;
+    }
+
+    a {
+        color: #42993a;
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: #42993a;
     }
 }
