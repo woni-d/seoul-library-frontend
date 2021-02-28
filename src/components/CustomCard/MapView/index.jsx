@@ -9,76 +9,57 @@ class MapView extends Component {
     this.state = {
       map: null,
       mapCenterPosition: null,
-      mapLevel: 3,
+      mapLevel: 3
     }
   }
 
   componentDidMount() {
-    const { id, x, y } = this.props
-    const { mapLevel } = this.state
     try {
+      const { id, x, y } = this.props
+      const { mapLevel } = this.state
+
       if (!id || !x || !y) {
-        throw new Error('Not Kakao Map!')
+        throw new Error('There was a problem importing the Kakao Map!')
       }
       
-      const container = document.getElementById(id)
-
       if (window.kakao && window.kakao.hasOwnProperty('maps')) {
-        const centerPosition = new kakao.maps.LatLng(Number(x), Number(y)) 
         const options = {
-          center: centerPosition, // 지도의 중심좌표
+          center: new kakao.maps.LatLng(Number(x), Number(y)), // 지도의 중심좌표
           level: mapLevel // 지도의 확대 레벨
         }
+        const container = document.getElementById(id)
         const map = new kakao.maps.Map(container, options)
-        const marker = new kakao.maps.Marker({
-            position: centerPosition
-        })
+        const marker = new kakao.maps.Marker({ position: options.center })
         marker.setMap(map)
 
         this.setState({
           map,
-          mapCenterPosition: centerPosition,
+          mapCenterPosition: options.center
         })
       } else {
-        const apiKey = process.env.REACT_APP_KAKAO_API_KEY
         const script = document.createElement('script')
         script.onload = () => kakao.maps.load(this.initMap)
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_API_KEY}&autoload=false`
         document.head.appendChild(script)
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err)
     }
   }
 
-  zoomIn = () => { // 확대
-    const map = this.state.map
-    const level = map.getLevel();
-    map.setLevel(level - 1);
-  }
-
-  zoomOut = () => { // 축소
-    const map = this.state.map
-    const level = map.getLevel();
-    map.setLevel(level + 1);
-  }
-
-  panTo = () => {
-    const map = this.state.map
-    const centerPosition = this.state.mapCenterPosition
-    map.panTo(centerPosition);            
-  }
+  zoomIn = () => this.state.map.setLevel(this.state.map.getLevel() - 1) // 확대
+  zoomOut = () => this.state.map.setLevel(this.state.map.getLevel() + 1) // 축소
+  panTo = () => this.state.map.panTo(this.state.mapCenterPosition)
 
   render() {
     const { id, x, y } = this.props
     const { map } = this.state
-    const mapClassName = (!id || !x || !y) ? 'map-alt-wrapper': 'map-wrapper'
+    const mapClassName = !id || !x || !y || !map ? 'map-alt-wrapper': 'map-wrapper'
 
     return (
       <>
         {
-          (mapClassName === 'map-wrapper' && map)
+          (map && mapClassName === 'map-wrapper')
           &&
           <div className='map-button-wrapper'>
             <Button
@@ -115,8 +96,10 @@ class MapView extends Component {
 
         <a href={`https://www.google.com/maps/search/?api=1&query=${x},${y}`} target='_blank'>
           <div className={mapClassName}>
-            { mapClassName === 'map-wrapper' || 'Google 지도로 이동하기' }
-              <div id={id}>{ (mapClassName === 'map-wrapper' && map) && 'Google 지도로 이동하기' }</div>
+            {mapClassName === 'map-alt-wrapper' && 'Google 지도로 이동하기'}
+            <div id={id}>
+              {(map && mapClassName === 'map-wrapper') && 'Google 지도로 이동하기'}
+            </div>
           </div>
         </a>
       </>
