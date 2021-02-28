@@ -10,7 +10,8 @@ class MapView extends Component {
       map: null,
       mapCenterPosition: null,
       mapLevel: 3,
-      id: null
+      id: null,
+      doesLoadedKakaoMap: null
     }
   }
 
@@ -20,7 +21,7 @@ class MapView extends Component {
 
   setMap = () => {
     try {
-      const { id, x, y } = this.props
+      const { doesLoadedKakaoMap, id, x, y } = this.props
       const { mapLevel } = this.state
 
       if (id) {
@@ -37,7 +38,8 @@ class MapView extends Component {
           this.setState({
             map,
             mapCenterPosition: options.center,
-            id
+            id,
+            doesLoadedKakaoMap
           })
         })
       }
@@ -50,9 +52,9 @@ class MapView extends Component {
   panTo = () => this.state.map.panTo(this.state.mapCenterPosition)
 
   render() {
-    const { id, x, y } = this.props
+    const { doesLoadedKakaoMap, id, x, y } = this.props
     
-    if (id !== this.state.id) {
+    if (id !== this.state.id || doesLoadedKakaoMap !== this.state.doesLoadedKakaoMap) {
       this.setMap()
     }
 
