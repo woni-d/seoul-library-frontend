@@ -10,6 +10,8 @@ class MapView extends Component {
       map: null,
       mapCenterPosition: null,
       mapLevel: 3,
+      doesExistTrafficLayer: false,
+      doesExistRoadViewLayer: false,
       id: null,
       doesLoadedKakaoMap: null
     }
@@ -36,10 +38,6 @@ class MapView extends Component {
           map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)
           map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW)
 
-          // if (currentTypeId) {
-          //   map.removeOverlayMapTypeId(currentTypeId)  
-          // }
-
           const marker = new kakao.maps.Marker({ position: options.center })
           marker.setMap(map)
           const link = `https://www.google.com/maps/search/?api=1&query=${x},${y}`
@@ -56,6 +54,8 @@ class MapView extends Component {
           this.setState({
             map,
             mapCenterPosition: options.center,
+            doesExistTrafficLayer: true,
+            doesExistRoadViewLayer: true,
             id,
             doesLoadedKakaoMap
           })
@@ -68,6 +68,22 @@ class MapView extends Component {
   zoomIn = () => this.state.map.setLevel(this.state.map.getLevel() - 1)
   zoomOut = () => this.state.map.setLevel(this.state.map.getLevel() + 1)
   panTo = () => this.state.map.panTo(this.state.mapCenterPosition)
+  toggleTrafficLayer = () => {
+    const { doesExistTrafficLayer, map } = this.state
+
+    if (doesExistTrafficLayer) map.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)  
+    else map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)
+
+    this.setState({ doesExistTrafficLayer: !doesExistTrafficLayer })
+  }
+  toggleRoadViewLayer = () => {
+    const { doesExistRoadViewLayer, map } = this.state
+
+    if (doesExistRoadViewLayer) map.removeOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW)  
+    else map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW)
+
+    this.setState({ doesExistRoadViewLayer: !doesExistRoadViewLayer })
+  }
 
   render() {
     const { doesLoadedKakaoMap, id, x, y } = this.props
@@ -106,6 +122,24 @@ class MapView extends Component {
               onClick={this.zoomOut}
             >
               -
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.toggleTrafficLayer}
+            >
+              교통 정보 추가/삭제
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.toggleRoadViewLayer}
+            >
+              로드뷰 정보 추가/삭제
             </Button>
           </div>
         </div>
