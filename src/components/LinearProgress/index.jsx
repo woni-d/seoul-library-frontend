@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LinearIndeterminate() {
   const classes = useStyles()
+  
   return (
     <div className={classes.root}>
       <LinearProgress />

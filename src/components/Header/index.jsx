@@ -1,66 +1,51 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import SwipeableViews from 'react-swipeable-views'
-import { Typography, AppBar, Tabs, Tab, Box, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
+import { AppBar, Tabs, Tab, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
+import TabPanel from './TapPanel'
 import CustomSelect from '../CustomSelect'
 import './Header.scss'
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      {...other}
-    >
-      {
-        value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )
-      }
-    </div>
-  )
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-}
 
 function Header(props) {
   const {
     districtList,
     searchOption,
-    searchOptionObj,
-    searchTextOptionArr,
     selectedDistrict,
     libraryTotalCount,
     libraryStartCount,
     libraryEndCount,
     searchText,
+    handleSearch,
     handleSearchOptionChange,
-    handleSearchValueChange,
-    handleSearch
+    handleSearchValueChange
   } = props
+
+  const searchOptionObj = {
+    district: {
+      prop: 'selectedDistrict',
+      label: '구명',
+    },
+    name: {
+      prop: 'name',
+      label: '도서관명',
+    },
+    address: {
+      prop: 'address',
+      label: '도서관주소',
+    }
+  }
 
   const [value, setValue] = React.useState(searchOption === searchOptionObj.district.prop ? 0 : 1)
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-    handleSearchOptionChange(newValue)()
+  const handleChange = (e, value) => {
+    setValue(value)
+    handleSearchOptionChange(value)()
   }
 
-  const handleChangeIndex = (index) => {
-    setValue(index)
-  }
+  const handleChangeIndex = (index) => setValue(index)
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
       handleSearch()
     }
   }
@@ -132,7 +117,7 @@ function Header(props) {
                   onChange={handleSearchValueChange}
                 >
                   {
-                    searchTextOptionArr.map(elem => (
+                    ['name', 'address'].map(elem => (
                       <MenuItem
                         key={searchOptionObj[elem].prop}
                         value={searchOptionObj[elem].prop}
@@ -146,7 +131,7 @@ function Header(props) {
 
               <div>
                 <TextField
-                    label={searchOptionObj.hasOwnProperty(searchOption) ? searchOptionObj[searchOption].label : 'None'}
+                    label={(searchOptionObj && searchOptionObj[searchOption] && searchOptionObj[searchOption].label) || 'None'}
                     name="searchText"
                     value={searchText}
                     autoComplete="searchKeyword"
