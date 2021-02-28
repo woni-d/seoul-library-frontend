@@ -4,12 +4,6 @@ import Main from './main.jsx'
 
 class Pages extends Component {
   render() {
-    const pages = [
-      {
-        path: '/',
-        component: <Main />,
-      },
-    ]
     return (
       <>
         <Route path="/" render={() => <Main />} />
