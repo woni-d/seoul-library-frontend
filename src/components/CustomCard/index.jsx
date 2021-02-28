@@ -59,6 +59,7 @@ class CardView extends Component {
             : <MapView
                 doesLoadedKakaoMap={doesLoadedKakaoMap}
                 id={cardItem.LBRRY_SEQ_NO}
+                name={cardItem.LBRRY_NAME}
                 x={cardItem.XCNTS}
                 y={cardItem.YDNTS}
               />

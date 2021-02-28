@@ -39,9 +39,14 @@
     width: 100%;
 
     // 꼭 map이 표시되는 div의 width, height는 고정 길이여야 한다
-    div {
+    div:first-child {
         height: 250px;
         line-height: 250px;
+
+        div {
+            height: 70px;
+            line-height: 35px;
+        }
     }
 
     a {

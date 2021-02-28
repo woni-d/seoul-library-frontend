@@ -21,7 +21,7 @@ class MapView extends Component {
 
   setMap = () => {
     try {
-      const { doesLoadedKakaoMap, id, x, y } = this.props
+      const { doesLoadedKakaoMap, id, name, x, y } = this.props
       const { mapLevel } = this.state
 
       if (id) {
@@ -42,7 +42,17 @@ class MapView extends Component {
 
           const marker = new kakao.maps.Marker({ position: options.center })
           marker.setMap(map)
-  
+          const link = `https://www.google.com/maps/search/?api=1&query=${x},${y}`
+          const content = `<div style="font-family: 'Nanum Myeongjo'; height: 100px;">
+            ${name}
+            <br>
+            <a href="${link}" target='_blank'>(Google 지도로 이동하기)</a>
+          </div>
+          `
+          
+          const infoWindow = new kakao.maps.InfoWindow({ content })
+          infoWindow.open(map, marker)
+    
           this.setState({
             map,
             mapCenterPosition: options.center,
