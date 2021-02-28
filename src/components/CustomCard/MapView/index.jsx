@@ -105,43 +105,41 @@ class MapView extends Component {
             도서관 위치로
           </Button>
 
-          <div className="map-buttons">
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={this.zoomIn}
-            >
-              +
-            </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={this.zoomIn}
+          >
+            +
+          </Button>
 
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={this.zoomOut}
-            >
-              -
-            </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={this.zoomOut}
+          >
+            -
+          </Button>
 
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={this.toggleTrafficLayer}
-            >
-              교통 정보 추가/삭제
-            </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={this.toggleTrafficLayer}
+          >
+            교통 지도 추가/삭제
+          </Button>
 
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={this.toggleRoadViewLayer}
-            >
-              로드뷰 정보 추가/삭제
-            </Button>
-          </div>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={this.toggleRoadViewLayer}
+          >
+            로드뷰 지도 추가/삭제
+          </Button>
         </div>
 
         <div className="map-wrapper">

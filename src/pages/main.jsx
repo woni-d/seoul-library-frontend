@@ -14,7 +14,7 @@ class Main extends Component {
     this.state = {
       libraryAllCount: null,
       libraryList: null,
-      libraryTotalCount: 1,
+      libraryTotalCount: 0,
       libraryStartCount: 1, // Open API 인덱스 1부터 시작
       libraryEndCount: 1,
 
