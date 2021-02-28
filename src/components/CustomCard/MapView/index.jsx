@@ -25,14 +25,22 @@ class MapView extends Component {
       const { mapLevel } = this.state
 
       if (id) {
-        window.kakao.maps.load(() => {
+        kakao.maps.load(() => {
           const container = document.getElementById(id)
           const options = {
-            center: new window.kakao.maps.LatLng(Number(x), Number(y)), // 지도의 중심좌표
+            center: new kakao.maps.LatLng(Number(x), Number(y)), // 지도의 중심좌표
             level: mapLevel // 지도의 확대 레벨
           }
-          const map = new window.kakao.maps.Map(container, options)
-          const marker = new window.kakao.maps.Marker({ position: options.center })
+          const map = new kakao.maps.Map(container, options)
+
+          map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)
+          map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW)
+
+          // if (currentTypeId) {
+          //   map.removeOverlayMapTypeId(currentTypeId)  
+          // }
+
+          const marker = new kakao.maps.Marker({ position: options.center })
           marker.setMap(map)
   
           this.setState({
