@@ -1,0 +1,33 @@
+.map-button-wrapper {
+    margin: 10px 37.5%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.map-wrapper {
+    color: #000000;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: #000000;
+    width: 100%;
+
+    // 꼭 map이 표시되는 div의 width, height는 고정 길이여야 한다
+    div:first-child {
+        height: 700px;
+
+        div {
+            height: 70px;
+            line-height: 35px;
+            font-family: 'Nanum Myeongjo';
+        }
+    }
+
+    a {
+        color: #42993a;
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: #42993a;
+    }
+}

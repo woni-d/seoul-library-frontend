@@ -27,7 +27,7 @@ class Main extends Component {
       searchText: '',
       isTotalMap: false,
 
-      countPerPage: 5,
+      countPerPage: 10,
       currentPage: 1,
 
       successAlertOpen: false,
@@ -50,7 +50,7 @@ class Main extends Component {
       const districtOption = {}
       
       for (let i = 0; i < Math.floor(libraryAllCount / 1000) + (libraryAllCount % 1000 ? 1 : 0); i++) {
-        const requestUrl = `http://openapi.seoul.go.kr:8088/${process.env.REACT_APP_SEOUL_API_KEY}/json/SeoulLibraryTimeInfo/${(i * 1000)}/${((i + 1) * 999)}`
+        const requestUrl = `http://openapi.seoul.go.kr:8088/${process.env.REACT_APP_SEOUL_API_KEY}/json/SeoulLibraryTimeInfo/${i * 1000}/${(i + 1) * 999}`
         const response = await axios.get(requestUrl)
         if (response && response.data && response.status === 200) {
           const { data: { SeoulLibraryTimeInfo: { row } } } = response
@@ -94,7 +94,7 @@ class Main extends Component {
   }
 
   async getLibraryList() {
-    const { searchOption, libraryStartCount, libraryEndCount, currentPage, countPerPage } = this.state
+    const { searchOption, libraryStartCount, libraryEndCount, currentPage, countPerPage, isTotalMap } = this.state
 
     this.setState({
       linearProgressShow: true
@@ -102,9 +102,9 @@ class Main extends Component {
 
     try {
       if (searchOption === 'selectedDistrict') {
-        const libraryStartCountByPage = libraryStartCount + ((currentPage - 1) * countPerPage)
-        const libraryEndCountByPage = libraryStartCountByPage + (countPerPage - 1) <= libraryEndCount ? libraryStartCountByPage + (countPerPage - 1) : libraryEndCount
-  
+        const libraryStartCountByPage = isTotalMap ? libraryStartCount : (libraryStartCount + ((currentPage - 1) * countPerPage))
+        const libraryEndCountByPage = isTotalMap ? libraryEndCount : (libraryStartCountByPage + (countPerPage - 1) <= libraryEndCount ? libraryStartCountByPage + (countPerPage - 1) : libraryEndCount)
+
         const reuqestUrl = `http://openapi.seoul.go.kr:8088/${process.env.REACT_APP_SEOUL_API_KEY}/json/SeoulLibraryTimeInfo/${libraryStartCountByPage}/${libraryEndCountByPage}`
         const response = await axios.get(reuqestUrl)
         if (response && response.data && response.status === 200) {
@@ -138,7 +138,7 @@ class Main extends Component {
         this.setState({
           libraryList: filteredList,
           libraryStartCount: 0,
-          libraryEndCount:0 ,
+          libraryEndCount: 0,
           libraryTotalCount: 0
         })
       }
@@ -265,7 +265,12 @@ class Main extends Component {
           isTotalMap ?
           (
             libraryList ?
-            <TotalMap libraryList={libraryList} /> :
+            <TotalMap
+              libraryList={libraryList}
+              selectedDistrict={selectedDistrict}
+              libraryStartCount={libraryStartCount}
+              libraryEndCount={libraryEndCount}
+            /> :
             <Skeleton variant="rect" animation="wave" width={'70%'} height={250} /> 
           )
           :
