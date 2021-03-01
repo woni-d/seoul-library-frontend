@@ -105,41 +105,48 @@ class MapView extends Component {
             도서관 위치로
           </Button>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            onClick={this.zoomIn}
-          >
-            +
-          </Button>
+          <div className='map-button-pair-wrapper'>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.zoomIn}
+              style={{ width: '100%' }}
+            >
+              +
+            </Button>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            onClick={this.zoomOut}
-          >
-            -
-          </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.zoomOut}
+              style={{ width: '100%' }}
+            >
+              -
+            </Button>
+          </div>
+          <div className='map-button-pair-wrapper'>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.toggleTrafficLayer}
+              style={{ width: '100%' }}
+            >
+              교통 지도 추가/삭제
+            </Button>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            onClick={this.toggleTrafficLayer}
-          >
-            교통 지도 추가/삭제
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            onClick={this.toggleRoadViewLayer}
-          >
-            로드뷰 지도 추가/삭제
-          </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={this.toggleRoadViewLayer}
+              style={{ width: '100%' }}
+            >
+              로드뷰 지도 추가/삭제
+            </Button>
+          </div>
         </div>
 
         <div className="map-wrapper">
