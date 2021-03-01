@@ -36,13 +36,11 @@ function Header(props) {
   }
 
   const [value, setValue] = React.useState(searchOption === searchOptionObj.district.prop ? 0 : 1)
-
+  
   const handleChange = (e, value) => {
     setValue(value)
     handleSearchOptionChange(value)()
   }
-
-  const handleChangeIndex = (index) => setValue(index)
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -71,7 +69,7 @@ function Header(props) {
         </AppBar>
         <SwipeableViews
           index={value}
-          onChangeIndex={handleChangeIndex}
+          onChangeIndex={handleChange}
         >
           <TabPanel value={value} index={0}>
             <div className="header-district-tab-wrapper">

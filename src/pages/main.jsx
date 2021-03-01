@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Snackbar } from '@material-ui/core'
+import { Skeleton } from '@material-ui/lab'
 import MuiAlert from '@material-ui/lab/Alert'
 import Header from '../components/Header'
 import CustomCard from '../components/CustomCard'
@@ -262,7 +263,12 @@ class Main extends Component {
         
         {
           isTotalMap ?
-          <TotalMap libraryList={libraryList} doesLoadedKakaoMap={searchOption === 'selectedDistrict' ? true : false} /> :
+          (
+            libraryList ?
+            <TotalMap libraryList={libraryList} /> :
+            <Skeleton variant="rect" animation="wave" width={'70%'} height={250} /> 
+          )
+          :
           <Libraries>
           {
             (

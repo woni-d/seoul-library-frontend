@@ -55,7 +55,7 @@ class CardView extends Component {
 
           {
             loading
-            ? <Skeleton variant="rect" animation="wave" width={500} height={250} /> 
+            ? <Skeleton variant="rect" animation="wave" width={'70%'} height={250} /> 
             : <MapView
                 doesLoadedKakaoMap={doesLoadedKakaoMap}
                 id={cardItem.LBRRY_SEQ_NO}
