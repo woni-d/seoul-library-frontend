@@ -10,6 +10,8 @@
 
 ### 🏠 [Homepage](https://github.com/woni-d/seoul-library)
 
+![example](./example.gif)
+
 ## Install
 
 ```sh
