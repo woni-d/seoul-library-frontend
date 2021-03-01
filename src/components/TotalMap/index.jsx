@@ -11,6 +11,7 @@ class TotalMap extends Component {
           mapLevel: 7,
           doesExistTrafficLayer: false,
           doesExistRoadViewLayer: false,
+          libraryListLength: null,
           selectedDistrict: null,
           libraryStartCount: null,
           libraryEndCount: null
@@ -66,6 +67,7 @@ class TotalMap extends Component {
               map,
               doesExistTrafficLayer: true,
               doesExistRoadViewLayer: true,
+              libraryListLength: libraryList.length,
               selectedDistrict,
               libraryStartCount,
               libraryEndCount
@@ -95,9 +97,10 @@ class TotalMap extends Component {
     }
 
     render() {
-      const { selectedDistrict, libraryStartCount, libraryEndCount } = this.props
+      const { libraryList, selectedDistrict, libraryStartCount, libraryEndCount } = this.props
 
       if (
+        (libraryList ? libraryList.length : 0) !== this.state.libraryListLength ||
         selectedDistrict !== this.state.selectedDistrict ||
         libraryStartCount !== this.state.libraryStartCount ||
         libraryEndCount !== this.state.libraryEndCount
