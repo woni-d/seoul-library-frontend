@@ -65,6 +65,7 @@ function Header(props) {
             variant="fullWidth"
           >
             <Tab label="구별 검색" />
+            <Tab label="구별 검색 모아보기" />
             <Tab label="도서관명 / 주소 검색" />
           </Tabs>
         </AppBar>
@@ -107,6 +108,40 @@ function Header(props) {
           </TabPanel>
 
           <TabPanel value={value} index={1}>
+            <div className="header-district-tab-wrapper">
+              <CustomSelect
+                label={searchOptionObj.district.label}
+                name={searchOptionObj.district.prop}
+                value={selectedDistrict}
+                list={districtList}
+                handleSearchValueChange={handleSearchValueChange}
+              />
+
+              <div>
+                <TextField
+                  label="start"
+                  name="libraryStartCount"
+                  value={libraryStartCount}
+                  placeholder="시작 (start)"
+                  type="number"
+                  InputProps={{ inputProps: { min: 1, max: libraryTotalCount } }}
+                  onChange={handleSearchValueChange}
+                />
+        
+                <TextField
+                  label="limit"
+                  name="libraryEndCount"
+                  value={libraryEndCount}
+                  placeholder="끝 (end)"
+                  type="number"
+                  InputLabelProps={{ shrink: true }}
+                  onChange={handleSearchValueChange}
+                />
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel value={value} index={2}>
             <div className="header-search-tab-wrapper">
               <FormControl variant="outlined">
                 <InputLabel>검색 옵션</InputLabel>

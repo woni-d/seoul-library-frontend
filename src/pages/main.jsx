@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import CustomCard from '../components/CustomCard'
 import LinearProgress from '../components/LinearProgress'
 import CustomPagination from '../components/CustomPagination'
+import TotalMap from '../components/TotalMap'
 import { Container, Libraries } from './main.style'
 
 class Main extends Component {
@@ -23,6 +24,7 @@ class Main extends Component {
       searchOption: 'selectedDistrict',
       selectedDistrict: '-----',
       searchText: '',
+      isTotalMap: false,
 
       countPerPage: 5,
       currentPage: 1,
@@ -164,10 +166,14 @@ class Main extends Component {
       stateObj['searchOption'] = 'selectedDistrict'
       stateObj['libraryStartCount'] = districtOptionKeys.length > 0 ? districtOption[districtOptionKeys[0]].start : 1
       stateObj['libraryEndCount'] = districtOptionKeys.length > 0 ? districtOption[districtOptionKeys[0]].end : 1
+    } else if (value === 1) {
+      stateObj['isTotalMap'] = true
     } else { // search text
       stateObj['searchOption'] = 'name'
       stateObj['searchText'] = ''
     }
+
+    if (value !== 1) stateObj['isTotalMap'] = false
 
     this.setState(stateObj)
   }
@@ -219,6 +225,7 @@ class Main extends Component {
       searchOption,
       selectedDistrict,
       searchText,
+      isTotalMap,
 
       countPerPage,
 
@@ -252,8 +259,11 @@ class Main extends Component {
           handleSearchValueChange={this.handleChange}
           handleSearch={this.handleSearch}
         />
-
-        <Libraries>
+        
+        {
+          isTotalMap ?
+          <TotalMap libraryList={libraryList} doesLoadedKakaoMap={searchOption === 'selectedDistrict' ? true : false} /> :
+          <Libraries>
           {
             (
               libraryList ?
@@ -278,6 +288,7 @@ class Main extends Component {
             />
           }
         </Libraries>
+        }
       
         {
           linearProgressShow &&
