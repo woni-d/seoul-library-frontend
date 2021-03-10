@@ -22,6 +22,19 @@ class TotalMap extends Component {
       this.setTotalMap()
     }
 
+    componentDidUpdate(prevProps) {
+      const { libraryList, selectedDistrict, libraryStartCount, libraryEndCount } = this.props
+
+      if (
+        (prevProps.libraryList ? prevProps.libraryList.length : 0) !== libraryList.length ||
+        prevProps.selectedDistrict !== selectedDistrict ||
+        prevProps.libraryStartCount !== libraryStartCount ||
+        prevProps.libraryEndCount !== libraryEndCount
+      ) {
+        this.setTotalMap()
+      }
+    }
+
     setTotalMap = () => {
       try {
         const { libraryList, selectedDistrict, libraryStartCount, libraryEndCount } = this.props
@@ -97,17 +110,6 @@ class TotalMap extends Component {
     }
 
     render() {
-      const { libraryList, selectedDistrict, libraryStartCount, libraryEndCount } = this.props
-
-      if (
-        (libraryList ? libraryList.length : 0) !== this.state.libraryListLength ||
-        selectedDistrict !== this.state.selectedDistrict ||
-        libraryStartCount !== this.state.libraryStartCount ||
-        libraryEndCount !== this.state.libraryEndCount
-      ) {
-        this.setTotalMap()
-      }
-
       return (
           <>
           <div className='map-button-wrapper'>
